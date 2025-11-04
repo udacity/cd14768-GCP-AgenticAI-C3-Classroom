@@ -119,12 +119,12 @@ for a hypothetical robot.
 
 * ADK output\_schema
 
-### Exercise: Using Named Entity Recognition (NER) in a Household Agent
+### Exercise: Information summarizer
 
 #### Summary
 
-You will use features of Gemini and ADK to identify instructions for a smart
-home device.
+You will use features of Gemini and ADK to summarize a customer service feedback
+paragraph, identifying specific information that was provided
 
 #### Features:
 
@@ -195,7 +195,7 @@ itself works with state machines internally.
 #### Summary
 
 You will implement a state machine inside ADK to help an agent manage the
-session conversation. You’ll see how the sessions service manages state and
+session conversation. You’ll see how the session service manages state and
 observe how it changes during the conversation.
 
 #### Features:
@@ -412,24 +412,26 @@ both authorization and limiting how data is controlled.
 * Google Cloud SQL for MySQL
 * Using MCP Database Toolkit to access data
 
-### Exercise: Creating an Agent Counter
+### Exercise: Creating Warehouse Management Agent
 
 #### Summary
 
-You will create an agent that answers simple questions. More importantly,
-however, you will keep a count of how many questions you’ve answered in a MySQL
-database and boast about this number periodically. But you need to make sure
-this number can’t be faked.
+You will create an agent that manages the inventory database for a warehouse.
+Due to the value of the products, there needs to be an audit trail for all
+transactions, and this audit database cannot be altered. You will need to create
+tools that reflect the CRUD nature of database operations, but with
+restrictions.
 
 #### Features:
 
 * Using MCP servers
-* Database access that prevents data injection
+* Database access that enforces security constraints
+* Using tools to create audit logs
 
 #### Google Specific Features:
 
 * Google Cloud SQL for MySQL
-* Using MCP Database Toolkit to access data
+* Using MCP Database Toolkit to access and update data
 
 ---
 
@@ -487,7 +489,9 @@ so almost automatically.
 
 Just getting data isn’t always enough \- sometimes it depends what you can do
 with it. After we have gotten data from Google Search, how can we use other
-tools
+tools. You will use the Grounding with Google Search tool to retrieve current
+financial information and then a custom tool you create to do some calculations
+and return it in a structured format.
 
 #### Features:
 
@@ -544,6 +548,8 @@ tool in ADK and the Google Cloud Platform library.
 
 #### Features:
 
+* Answers grounded by documents (In this case, public financial documents.)
+
 #### Google Specific Features:
 
 * Loading and updating corpus data from Google Cloud Storage
@@ -559,7 +565,8 @@ them into Vertex AI Search and build an agent to answer questions about them.
 
 #### Features:
 
-* Answers grounded by documents
+* Answers grounded by documents that have been created by the student to make
+  sure they do not exist in Gemini’s training data.
 
 #### Google Specific Features:
 
