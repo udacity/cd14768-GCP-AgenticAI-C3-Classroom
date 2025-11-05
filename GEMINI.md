@@ -22,7 +22,7 @@ from the files in "project/solution".
 Other requirements for the code:
 * It must be written in python and using the ADK toolkit
 * There must be an "__init__.py" file. You can copy it from a previous demo 
-  or exercise folder
+  or exercise folder. It must not be empty.
 * There must be an "agent.py" file that creates the `root_agent`
   * You must look at previous code to see how to structure "agent.py"
   * The name of the adk package is "google.adk".
@@ -34,6 +34,6 @@ Other requirements for the code:
   * Make sure there is a model variable that is set to "gemini-2.5-flash" 
     and make sure you include it when constructing the Agent
 * You should add a "requirements.txt"
-* Make sure you explicitly copy the .env file from a previous demo or 
-  exercise folder
+* When creating new module demos and exercises, always include the 
+  .env file by copying it from a previous module.
 * It should be clear and well documented
