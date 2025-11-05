@@ -34,5 +34,6 @@ Other requirements for the code:
   * Make sure there is a model variable that is set to "gemini-2.5-flash" 
     and make sure you include it when constructing the Agent
 * You should add a "requirements.txt"
-* You should copy the .env file from a previous demo or exercise folder
+* Make sure you explicitly copy the .env file from a previous demo or 
+  exercise folder
 * It should be clear and well documented
