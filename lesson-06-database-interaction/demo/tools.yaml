@@ -1,0 +1,56 @@
+sources:
+  demo:
+    kind: mysql
+    host: ${MYSQL_HOST}
+    port: ${MYSQL_PORT:3306}
+    database: demo
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+tools:
+  books-by-author:
+    kind: mysql-sql
+    source: demo
+    description: Get the books written by a specific author
+    parameters:
+      - name: author
+        type: string
+        description: The name of the author we're looking for
+    statement:
+      SELECT
+        b.title,
+        a.name AS author_name,
+        b.publication_year
+      FROM
+        books b
+      JOIN
+        authors a ON b.author_id = a.author_id
+      WHERE
+        LOWER(a.name) LIKE CONCAT('%', LOWER(?), '%')
+      ORDER BY
+        b.title;
+  books-in-year-range:
+    kind: mysql-sql
+    source: demo
+    description:
+      Get the books written between two years. 
+      If you want books in just one year, you can use the same year for both parameters.
+    parameters:
+      - name: yearStart
+        type: integer
+        description: List books published staring in this year, inclusive
+      - name: yearEnd
+        type: integer
+        description: List books published ending in this year, inclusive
+    statement:
+      SELECT
+        b.title,
+        a.name AS author_name,
+        b.publication_year
+      FROM
+        books b
+      JOIN
+        authors a ON b.author_id = a.author_id
+      WHERE
+        publication_year >= ? AND publication_year <= ?
+      ORDER BY
+        publication_year;
