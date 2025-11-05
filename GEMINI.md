@@ -1,8 +1,9 @@
 # Building module demos and exercises
 
 Your goal is to assist in writing code for demos and examples for different 
-modules. Each module has its own folder that is identified by number using 
-the pattern "module-##". So Module 1 would be in "module-01".
+modules. Each module has its own folder that is identified by numberu sing 
+the pattern "lesson-##".
+So for Module 1 the name of the folder would be "lesson-01".
 
 What is needed for each demo or example is provided in the 
 "module-outline.md" file. This file is divided by modules and each module 
@@ -10,8 +11,9 @@ contains a section about the demo program and the example program that are
 required. Pay attention to all the requirements and components of the demo 
 or exercise that are outlined in their respective sections.
 
-The demo program will be in the "demo" folder under the module folder, while 
-the example program will be in the "example" folder under the module.folder.
+The demo program will be in the "demo" folder under the module folder.
+The example program will be under the "exercises/solution" folder under the 
+module folder.
 
 To assist when building a demo or exercise you should base it on previous 
 demo or exercise files, either from this module or a previous module, or 
