@@ -1,3 +1,4 @@
 google-adk
 google-cloud-secret-manager
 google-maps-places
+google-maps-routing

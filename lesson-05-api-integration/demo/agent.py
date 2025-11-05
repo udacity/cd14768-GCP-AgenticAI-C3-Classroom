@@ -1,6 +1,6 @@
 import os
 from google.adk.agents import Agent
-from .tools import get_place_details
+from .tools import get_place_details, get_route_between_places
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
@@ -9,7 +9,7 @@ with open(instruction_file_path, "r") as f:
 
 model = "gemini-2.5-flash"
 
-tools = [get_place_details]
+tools = [get_place_details, get_route_between_places]
 
 root_agent = Agent(
     name="location_agent",
