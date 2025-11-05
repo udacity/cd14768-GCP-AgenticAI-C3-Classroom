@@ -1,0 +1,65 @@
+sources:
+  warehouse:
+    kind: mysql
+    host: ${MYSQL_HOST}
+    port: ${MYSQL_PORT:3306}
+    database: warehouse
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+tools:
+  add_product:
+    kind: mysql-sql
+    source: warehouse
+    description: Adds a new product to the inventory.
+    parameters:
+      - name: name
+        type: string
+        description: The name of the product.
+      - name: price
+        type: number
+        description: The price of the product.
+      - name: stock_quantity
+        type: integer
+        description: The initial stock quantity.
+    statement:
+      INSERT INTO products (name, price, stock_quantity) VALUES (?, ?, ?);
+
+  get_product:
+    kind: mysql-sql
+    source: warehouse
+    description:
+      Gets the details of a product, including current inventory, by its name.
+    parameters:
+      - name: name
+        type: string
+        description: The name of the product to get.
+    statement:
+      SELECT * FROM products WHERE name = ?;
+
+  update_product_stock:
+    kind: mysql-sql
+    source: warehouse
+    description: Updates the stock quantity of a product.
+    parameters:
+      - name: product_id
+        type: integer
+        description: The ID of the product to update.
+      - name: new_stock_quantity
+        type: integer
+        description: The new stock quantity.
+    statement:
+      UPDATE products SET stock_quantity = ? WHERE product_id = ?;
+
+  log_audit:
+    kind: mysql-sql
+    source: warehouse
+    description: Logs an audit trail for a transaction.
+    parameters:
+      - name: action
+        type: string
+        description: The action that was performed (e.g., 'add_product', 'update_product_stock').
+      - name: details
+        type: string
+        description: The details of the transaction.
+    statement:
+      INSERT INTO audit_log (action, details) VALUES (?, ?);
