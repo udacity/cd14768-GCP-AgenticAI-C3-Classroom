@@ -55,6 +55,9 @@ tools:
     source: warehouse
     description: Logs an audit trail for a transaction.
     parameters:
+      - name: product_id
+        type: integer
+        description: The ID of the product that was acted upon.
       - name: action
         type: string
         description: The action that was performed (e.g., 'add_product', 'update_product_stock').
@@ -62,4 +65,4 @@ tools:
         type: string
         description: The details of the transaction.
     statement:
-      INSERT INTO audit_log (action, details) VALUES (?, ?);
+      INSERT INTO audit_log (product_id, action, details) VALUES (?, ?, ?);

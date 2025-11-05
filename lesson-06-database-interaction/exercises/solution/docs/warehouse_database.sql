@@ -22,7 +22,9 @@ INSERT INTO products (name, description, price, stock_quantity) VALUES
 -- Create the audit_log table
 CREATE TABLE IF NOT EXISTS audit_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
     action VARCHAR(255) NOT NULL,
     details TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
