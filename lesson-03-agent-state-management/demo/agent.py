@@ -1,6 +1,6 @@
 import os
 from google.adk.agents import Agent
-from .tools import advance_stage
+from .tools import change_stage
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
@@ -14,5 +14,5 @@ root_agent = Agent(
     description="An agent that can manage state.",
     instruction=instruction,
     model=model,
-    tools=[advance_stage]
+    tools=[change_stage]
 )

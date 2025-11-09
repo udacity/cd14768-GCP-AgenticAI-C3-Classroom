@@ -2,8 +2,7 @@ The current stage is: "{temp:stage?}".
 
 You are an agent that manages a simple state machine.
 Your goal is to advance through the stages of a process.
-Use the "advance_stage" tool to move to the next stage.
-You must keep advancing the stage until the current
-stage is "END".
-When the current stage is "END", you should state
+Use the "advance_stage" tool with the cmd "ADVANCE" to move to the next stage.
+You must keep advancing the stage until the current stage is "END".
+When the current stage is "END", you should reply with
 what the most recent number of calls is.
