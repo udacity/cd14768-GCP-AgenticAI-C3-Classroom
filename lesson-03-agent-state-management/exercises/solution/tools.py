@@ -21,13 +21,41 @@ def get_time():
             "time": datetime.now(timezone.utc).isoformat()
         }
 
-def check_retry(tool_context: ToolContext):
+TRANSITIONS = {
+    "START": {
+        "GET_TIME": "GETTING_TIME"
+    },
+    "GETTING_TIME": {
+        "GET_TIME": "GETTING_TIME",
+        "GOOD": "SUCCESS",
+        "BAD": "FAILURE"
+    },
+}
+
+def transition_state(start_state: str, command: str):
     """
-    Checks if the agent should retry a failed tool call.
+    Transitions the state machine to the next state based on the current state and command.
     """
-    retry_count = tool_context.state.get("temp:retry_count", 0)
-    if retry_count < 3:
-        tool_context.state["temp:retry_count"] = retry_count + 1
-        return {"should_retry": True}
+    if start_state in TRANSITIONS and command in TRANSITIONS[start_state]:
+        return TRANSITIONS[start_state][command]
     else:
-        return {"should_retry": False}
+        raise ValueError(f"Invalid transition from state '{start_state}' with command '{command}'")
+
+def change_stage(command: str, tool_context: ToolContext):
+    """
+    Advances the agent to the next stage in the process.
+    """
+    current_stage = tool_context.state.get("temp:stage", "START")
+    next_stage = transition_state(current_stage, command)
+    tool_context.state["temp:stage"] = next_stage
+
+    retry_count = tool_context.state.get("temp:retry_count", 0) + 1
+    tool_context.state["temp:retry_count"] = retry_count
+
+    if next_stage == "GETTING_TIME":
+        result = get_time()
+    else:
+        result = {}
+
+    return result
+

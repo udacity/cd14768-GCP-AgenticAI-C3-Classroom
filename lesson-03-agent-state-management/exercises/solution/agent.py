@@ -1,6 +1,6 @@
 import os
 from google.adk.agents import Agent
-from .tools import get_time, check_retry
+from .tools import change_stage
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
@@ -14,5 +14,5 @@ root_agent = Agent(
     description="An agent that can handle tool call errors and retry.",
     instruction=instruction,
     model=model,
-    tools=[get_time, check_retry]
+    tools=[change_stage]
 )
