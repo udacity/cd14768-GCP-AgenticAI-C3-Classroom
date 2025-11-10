@@ -193,7 +193,7 @@ Demo: Building short-term memory using ADK's \`Session\` data; Implement a slidi
 
 #### Summary
 
-We will build an agent that takes user commands to set preferences for how much a task should run, and then run that task that many times. The preferences will be saved between sessions (using “user:property” state names), while the task itself is session based (using regular “property” state names). We’ll discuss the difference between these state property names and the “temp:” state property name we used in the previous module.
+We will build an agent that takes user commands to set preferences for the maximum number of questions to ask, and then asks questions that many times. The preferences will be saved between sessions (using “user:property” state names), while the task itself is session based (using regular “property” state names). We’ll discuss the difference between these state property names and the “temp:” state property name we used in the previous module.
 
 #### Features:
 
