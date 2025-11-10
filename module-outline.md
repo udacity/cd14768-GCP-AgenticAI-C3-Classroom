@@ -189,11 +189,11 @@ Utilize ADK \`Session\` for conversational history; Explore custom integration w
 
 Demo: Building short-term memory using ADK's \`Session\` data; Implement a sliding window mechanism within an ADK agent; (Optional) Example of connecting an ADK agent to Memorystore for session data storage and retrieval.
 
-### Demo: Using State for Iterative Operations
+### Demo: Using Session and User-based memory
 
 #### Summary
 
-We will build an agent that takes user commands to set preferences for how much a task should run, and then run that task that many times. The preferences will be saved between sessions, while the task itself is session based.
+We will build an agent that takes user commands to set preferences for how much a task should run, and then run that task that many times. The preferences will be saved between sessions (using “user:property” state names), while the task itself is session based (using regular “property” state names). We’ll discuss the difference between these state property names and the “temp:” state property name we used in the previous module.
 
 #### Features:
 
@@ -202,13 +202,13 @@ We will build an agent that takes user commands to set preferences for how much 
 
 #### Google Specific Features:
 
-* Working with \`DatabaseSessionService\` or \`VertexAISessionService\`
+* Working with \`InMemorySessionService\`,  \`DatabaseSessionService\`, or \`VertexAISessionService\`
 
-### Exercise: Using State for Conditional Operations
+### Exercise: Using Session state for trip planning
 
 #### Summary
 
-You will build an agent that takes user commands to set preferences such as the units of temperature and distance and how dates and times should be formatted. Based on these preferences, you will design an agent that uses different tools depending on the user preferences, and those tools will report the data differently.
+You will build a travel agent that specializes in multi-step travel planning. Your agent will have a conversation with the customer to determine each stage where they want to go to, adding it to the itinerary in state each step. When the customer says it is done, it creates an itinerary. The customer can set their “home” location in their preferences and, if they do not specify a default starting location, it will use this home location.
 
 #### Features:
 
