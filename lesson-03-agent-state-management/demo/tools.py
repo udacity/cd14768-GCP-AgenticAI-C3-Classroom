@@ -1,14 +1,53 @@
 from google.adk.tools import ToolContext
 
 TRANSITIONS = {
-    "START": {
-        "ADVANCE": "TASK_1"
+    "BLACK": {
+        "ADD_RED": "RED",
+        "ADD_GREEN": "GREEN",
+        "ADD_BLUE": "BLUE",
+        "SHOW": "END",
     },
-    "TASK_1": {
-        "ADVANCE": "TASK_2"
+    "RED": {
+        "ADD_RED": "RED",
+        "ADD_GREEN": "YELLOW",
+        "ADD_BLUE": "MAGENTA",
+        "SHOW": "END",
     },
-    "TASK_2": {
-        "ADVANCE": "END"
+    "GREEN": {
+        "ADD_RED": "YELLOW",
+        "ADD_GREEN": "GREEN",
+        "ADD_BLUE": "CYAN",
+        "SHOW": "END",
+    },
+    "BLUE": {
+        "ADD_RED": "MAGENTA",
+        "ADD_GREEN": "CYAN",
+        "ADD_BLUE": "BLUE",
+        "SHOW": "END",
+    },
+    "YELLOW": {
+        "ADD_RED": "YELLOW",
+        "ADD_GREEN": "YELLOW",
+        "ADD_BLUE": "WHITE",
+        "SHOW": "END",
+    },
+    "MAGENTA": {
+        "ADD_RED": "MAGENTA",
+        "ADD_GREEN": "WHITE",
+        "ADD_BLUE": "MAGENTA",
+        "SHOW": "END",
+    },
+    "CYAN": {
+        "ADD_RED": "WHITE",
+        "ADD_GREEN": "CYAN",
+        "ADD_BLUE": "CYAN",
+        "SHOW": "END",
+    },
+    "WHITE": {
+        "ADD_RED": "WHITE",
+        "ADD_GREEN": "WHITE",
+        "ADD_BLUE": "WHITE",
+        "SHOW": "END",
     }
 }
 
@@ -26,7 +65,7 @@ def change_stage(command: str, tool_context: ToolContext):
     Advances the agent to the next stage in the process based on the command
     and returns how many times it has been called.
     """
-    current_stage = tool_context.state.get("temp:stage", "START")
+    current_stage = tool_context.state.get("temp:stage", "BLACK")
 
     counter = tool_context.state.get("temp:counter", 0) + 1
     tool_context.state["temp:counter"] = counter
@@ -35,7 +74,8 @@ def change_stage(command: str, tool_context: ToolContext):
         next_stage = transition_state(current_stage, command)
         tool_context.state["temp:stage"] = next_stage
         return {
-            "number_of_calls": counter
+            "number_of_calls": counter,
+            "color": current_stage,
         }
     except ValueError as e:
         return {
