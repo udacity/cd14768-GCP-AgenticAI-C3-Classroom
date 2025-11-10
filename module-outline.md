@@ -446,7 +446,7 @@ You’ll use Gemini to create several documents about various (brand new, non tr
 
 ---
 
-## Module 9: Implementing Long-Term Agent Memory with ADK and MemoryStore ~~Google Cloud Databases/Vertex AI~~
+## Module 9: Implementing Long-Term Agent Memory with ADK and VertexAI Agent Engine Memory Bank ~~Google Cloud Databases/Vertex AI~~
 
 ### Core Module Primary Learning Objective
 
@@ -468,20 +468,20 @@ Demonstrate how to prune or reorder memory for better performance; Implement sto
 
 Experiment with storing conversation summaries or key facts in Cloud SQL/Spanner via ADK; Use \`VertexAiRagMemoryService\` for managing and querying a knowledge base in Vertex AI RAG Engine; Demonstrate techniques for updating or refreshing this long-term memory.
 
-### Demo: Saving Conversations with MemoryStore
+### Demo: Saving Conversations with Memory Bank
 
 #### Summary
 
-We’ll explore the hooks necessary to save a copy of each session with MemoryStore and why we might want to do so
+We’ll explore the hooks necessary to save a copy of each session with Vertex AI Agent Engine Memory Bank and why we might want to do so
 
 #### Features:
 
 #### Google Specific Features:
 
-* MemoryStore  
+* Vertex AI Agent Engine Memory Bank  
 * ADK session event hooks
 
-### Exercise: Searching Conversations with MemoryStore
+### Exercise: Searching Conversations with Memory Bank
 
 #### Summary
 
@@ -493,7 +493,7 @@ Once we have an archive of our past conversations, we can ask our agent to recal
 
 #### Google Specific Features:
 
-* MemoryStore
+* Vertex AI Agent Engine Memory Bank
 
 ---
 
