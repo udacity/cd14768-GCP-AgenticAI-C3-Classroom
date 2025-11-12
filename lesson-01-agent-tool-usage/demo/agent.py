@@ -35,5 +35,6 @@ root_agent = Agent(
     name="weather_tools",
     description="Multiple tools to illustrate different weather conditions to return and how the ADK will use multiple tools to derive an answer",
     model=model,
+    instruction=instruction,
     tools=tools,
 )
