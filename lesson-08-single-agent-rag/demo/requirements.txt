@@ -1,2 +1,2 @@
-google-adk
-google-cloud-discoveryengine
+google-adk>=1.17.0
+google-cloud-discoveryengine>=0.13.12

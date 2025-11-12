@@ -1,2 +1,2 @@
-google-adk
-toolbox-core
+google-adk>=1.17.0
+toolbox-core>=0.5.2
