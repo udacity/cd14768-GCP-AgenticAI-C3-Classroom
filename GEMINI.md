@@ -36,4 +36,8 @@ Other requirements for the code:
 * You should add a "requirements.txt"
 * When creating new module demos and exercises, always include the 
   .env file by copying it from a previous module.
+* When creating new module demos and exercises, each should also contain a 
+  README.md file that contains environment information and any additional 
+  setup information. You can look at the README.md from previous modules for 
+  examples.
 * It should be clear and well documented
