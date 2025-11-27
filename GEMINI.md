@@ -406,6 +406,4 @@ adk web
 - Use code blocks with inline comments
 - Keep explanations concise (3-5 sentences per section)
 - Include expected output examples
-
-
-
+- Use the term "customer" when talking about the person who is using the agent
