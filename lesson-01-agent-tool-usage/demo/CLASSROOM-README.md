@@ -19,9 +19,9 @@ or custom tools within the Agent Development Kit (ADK).
 
 
 Learning objectives:
-- Learn ADK's `Tool` interface
+- Learn ADK's tool structure
 - Register and use tools with ADK agents
-- Parse tool responses
+- Understand how the LLM uses tool responses
 
 
 ### Prerequisites
@@ -29,6 +29,7 @@ Learning objectives:
 
 - Basic understanding of Python programming.
 - Familiarity with the basic concepts of Large Language Models (LLMs).
+- Basic familiarity with the ADK
 
 
 ---
@@ -66,42 +67,48 @@ making them more versatile and powerful.
 The process of an agent using tools typically involves several steps:
 
 
-**Step 1: User Query**
-The user provides a natural language query or instruction to the LLM agent.
+**Step 1: Customer Query**
+The customer provides a natural language query or instruction to the LLM agent.
 For example, "What's the weather like in London today?"
 
 
 **Step 2: Tool Selection**
-The LLM agent analyzes the user's query and, based on its training and the
+The LLM agent analyzes the customer's query and, based on its training and the
 descriptions of available tools, decides if any of these tools can help
-answer the query. It intelligently determines which tool is most appropriate.
+answer the query and uses one that seems likely to help answer the 
+customer's request.
 
 
 **Step 3: Function Calling**
 If a tool is identified, the LLM formulates a "function call" – it generates
 the precise name of the tool function to be executed along with the necessary
-arguments extracted from the user's query. For instance, `get_temperature(city="London")`.
+arguments extracted from the customer's query. For instance, `get_temperature
+(city="London")`.
 
 
 **Step 4: Tool Execution**
-The generated function call is then executed by the system. This external tool
+The ADK then executes the function that the LLM has requested, passing it 
+the parameters that the LLM has specified.
+The tool
 performs its designated task, such as querying a weather API, running a
-calculation, or accessing a database. The result of this execution is then
-returned.
+calculation, or accessing a database, and returning the results as the 
+return value from the function call.
 
 
 **Step 5: Response Generation**
-The output from the executed tool is fed back to the LLM. The LLM then
-integrates this new information into its context and generates a coherent,
-natural language response for the user, fulfilling the original request.
+The ADK then sends the output from the executed tool to the LLM. The LLM then
+integrates this new information into its context. Depending on the original 
+request, it may make further tool calls until it has enough information to 
+respond, at which point it generates a coherent,
+natural language response for the customer, fulfilling the original request.
 
 
 ### Key Terms
 
 
-**Function Calling**: The capability of an LLM to identify when to use an
-external tool and to generate the correct arguments for that tool's function
-based on a natural language prompt.
+**Function Calling**: The capability of an LLM to identify when to use a
+tool outside its built-in functionality and to generate the correct arguments 
+for that tool's function based on a natural language prompt.
 
 
 **Agent Development Kit (ADK)**: A framework designed to simplify the creation,
@@ -109,7 +116,7 @@ management, and deployment of LLM-powered agents, including robust mechanisms
 for integrating and orchestrating external tools.
 
 
-**Tool**: An external function, API, or module that an LLM-based agent can
+**Tool**: A function, API, or module that an LLM-based agent can
 invoke to extend its capabilities beyond its core language model functions,
 enabling real-world interaction or specialized data processing.
 
@@ -140,8 +147,8 @@ This demo includes three simple Python functions that simulate retrieving
 weather information for a given city. These functions act as "tools" that
 our agent can call. Each tool takes a `city` as input and returns a string
 representing a specific weather condition. Notice the clear function signatures
-and docstrings; these are crucial as the LLM uses them to understand
-what each tool does and how to call it.
+and docstrings; these are crucial as the ADK provides them to the LLM, which 
+uses them to understand what each tool does and how to call it.
 
 
 ```python
@@ -195,6 +202,8 @@ said on the radio or read over the phone.
   necessary").
 - It dictates the desired output format and tone ("pleasant to read and
   structured as if it was being said on the radio").
+- This file is read by the python code and provided to the LLM as part of 
+  the prompt or system instructions.
 
 
 ### Step 3: Create the ADK Agent
