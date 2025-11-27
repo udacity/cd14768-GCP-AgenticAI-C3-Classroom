@@ -49,11 +49,12 @@ while handling the natural language understanding and response generation.
 
 1. **User Request**: The user asks a math question (e.g., "What is 1234 *
    5678?").
-2. **Tool Selection**: The agent recognizes the need for calculation and
-   selects the appropriate tool (e.g., `multiplication`).
-3. **Execution**: The Python function runs with the provided arguments.
-4. **Response**: The function returns the result, and the agent incorporates it
-   into a natural language answer.
+2. **Tool Selection**: Based on the prompt and tool descriptions, the Gemini 
+   model identifies the need to call one or more tools.
+3. **Execution**: The ADK executes the appropriate tool calls 
+4. **Response**: The function returns the result, the ADK sends this to
+   Gemini, and Gemini incorporates all the results into a natural language
+   answer.
 
 ### Key Terms
 

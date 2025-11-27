@@ -52,20 +52,14 @@ accurate result.
 
 ### How It Works
 
-1. **Customer Inquiry**: The customer submits a query involving a mathematical
-   calculation (e.g., "What is 25 multiplied by 4?").
-2. **Tool Selection**: The LLM analyzes the query and identifies that a
-   mathematical operation is required. Based on the available tool definitions (
-   docstrings and function signatures), it determines the most appropriate
-   tool (e.g., `multiplication`).
-3. **Function Calling**: The LLM generates a structured function call,
-   extracting the necessary arguments from the customer's query (e.g.,
-   `multiplication(a=25, b=4)`).
-4. **Tool Execution**: The ADK executes the identified Python function with the
-   provided arguments.
-5. **Result Integration**: The precise result from the Python function is
-   returned to the LLM. The LLM then uses this result to formulate a natural
-   language response to the customer, ensuring accuracy.
+1. **User Request**: The user asks a math question (e.g., "What is 1234 *
+   5678?").
+2. **Tool Selection**: Based on the prompt and tool descriptions, the Gemini
+   model identifies the need to call one or more tools.
+3. **Execution**: The ADK executes the appropriate tool calls
+4. **Response**: The function returns the result, the ADK sends this to
+   Gemini, and Gemini incorporates all the results into a natural language
+   answer.
 
 ### Key Terms
 
@@ -289,6 +283,13 @@ root_agent = Agent(
 ```text
 Human: "What is 5 plus 3?"
 Agent: "The sum of 5 and 3 is 8."
+```
+
+Note that in this next output, it makes multiple tool calls to do the work.
+
+```text
+Human: "What is 5 plus 3 plus two?"
+Agent: "The sum of 5 and 3 and 2 is 10."
 ```
 
 ```text
