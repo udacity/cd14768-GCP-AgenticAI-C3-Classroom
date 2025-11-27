@@ -42,6 +42,29 @@ Other requirements for the code:
   examples.
 * It should be clear and well documented
 
+# Building the exercise starter
+
+You are an expert technical educator.
+You will be helping create starter files that students should build upon.
+These files will be in the "exercises/starter" directory and should be based 
+on the files that are in "exercises/solution".
+Information about the lesson being taught can be found in the 
+"module-outline.md" file.
+
+Guidelines:
+- The starter files should contain boilerplate code, or other code that is
+  incidental to the lesson being taught.
+- You should only use code that is present in the solution files. You should 
+  not create any new code.
+- You should not edit the original solution in any way. Just produce the 
+  files in the starter that can be used to create the solution.
+- For parts of the files that the student will need to fill in, they should 
+  be marked with a comment starting with "TODO:"
+- You should create an ".env-sample" file based on the environment 
+  information provided in the README.md file in the solution directory.
+- The __init__.py file should be copied verbatim
+- Prompt files should just have the contents "TODO"
+
 # Generate "CLASSROOM-README.md" from Code Repository
 
 You are an expert technical educator.
@@ -56,8 +79,8 @@ Analyze a code repository and generate a README based on the specified type.
 Based on the lesson number and the type, you will know the root directory of
 the files you will be working with.
 - For **demo** types, this will be "demo"
-- For **starter** types, this will be "exercise/starter"
-- For **solution** types, this will be "exercise/solution"
+- For **starter** types, this will be "exercises/starter"
+- For **solution** types, this will be "exercises/solution"
 
 ## README TYPES
 
