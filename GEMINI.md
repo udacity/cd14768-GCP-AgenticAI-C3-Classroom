@@ -291,6 +291,12 @@ Your implementation must:
 └── {file}  # {Description}
 ```
 
+Make sure you copy ".env-sample" to ".env" and edit it to add the Google
+Cloud project you are working with.
+
+{Provide any other instructions about the environment variables necessary}
+
+Remember that you should **never** check-in your .env file to git.
 
 ### Starter Code
 
@@ -314,6 +320,22 @@ Your implementation must:
 
 {Describe what the completed implementation should do}
 
+**Running the agent:**
+
+You will run the agent using the `adk web` tool. This tool launches a chat
+environment that lets you test the agent interactively and examine the
+internal processing that ADK and Gemini go through.
+
+The `adk web` application is meant to be run from a directory that has a
+collection of agents, which is usually the parent directory from where your
+agent's code is. Typically, you will run this on the same machine where your
+browser is located with a command such as:
+
+```bash
+adk web
+```
+
+{Provide any other information about starting it that are needed}
 
 **Example usage:**
 ```
