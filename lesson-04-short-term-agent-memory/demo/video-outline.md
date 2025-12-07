@@ -5,6 +5,11 @@ Implementing Short-Term Agent Memory with ADK
 - Explore how ADK manages state with different scopes (`user:` vs. session),
   enabling agents to remember user preferences across sessions while managing
   task progress within a session.
+  - This is necessary because, while the ADK may transmit some state during 
+    the conversation with the LLM, some things are not well represented 
+    in the conversation exchange.
+  - Discuss request state, session state, and user state
+  - State can be stored outside the ADK runtime, but we're using memory.
 - [tools.py] Explain User vs. Session Scope
     - Review `set_iterations`:
         - Shows how to store `num_iterations` in `user:num_iterations`.

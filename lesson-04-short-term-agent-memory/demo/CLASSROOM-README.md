@@ -41,10 +41,17 @@ Learning objectives:
 
 LLMs do not manage state, so one solution has been to provide the history of 
 a conversation each time. This includes any "hidden" conversation that isn't 
-shown to the customer.
+shown to the customer. 
 
-Real-world agents often need to remember things during an exchange, for 
-multiple rounds of a conversation, and between conversations.
+It may be tempting to rely on this conversational state to remember 
+everything we need to. While this can sometimes work, agents often need to 
+remember things during an exchange that are not represented well during a 
+single conversation. For example, LLMs are bad at counting, and we often 
+need to keep count of something. We also need to make sure that agents 
+remember some data in between sessions or conversations.
+
+To address these issues, ADK defines three types of memory that is saved in 
+state:
 
 1. **Request Memory**: Remembering information in between when a customer 
    makes a request and the LLM generates a final response.
