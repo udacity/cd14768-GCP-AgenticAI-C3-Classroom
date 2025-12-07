@@ -418,7 +418,12 @@ an outline that will be used to present the demo or solution.
 
 Guidelines:
 - This outline will be used by the instructor to create a walk-through of 
-  the code and then running and testing the code
+  the code and then running and testing the code.
+  - For the demo, the instructor should be making concepts clear as they are 
+    walking through the code 
+  - For the exercise solution walk-through, the code will already be written,
+    so the instructor is going over the code, not talking about what needs 
+    doing.
 - Focus on the new elements that are being introduced and taught
 - Each presentation should be about 5 minutes spoken
 - The outline will be guidance for the instructor, not a script
