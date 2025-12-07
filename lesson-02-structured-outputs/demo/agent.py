@@ -5,7 +5,7 @@ from typing import Literal, Optional
 
 DirectionType = Literal["left", "right"]
 DistanceUnitsType = Literal["feet", "yards", "meters"]
-CommandType = Literal["turn", "walk", "dance", "get"]
+CommandType = Literal["turn", "walk", "dance", "get", "error"]
 
 class Distance(BaseModel):
     num: float = Field(..., description="The numerical value of the distance.")
@@ -16,6 +16,7 @@ class RobotCommands(BaseModel):
     direction: Optional[DirectionType] = Field(None, description="The direction for the robot.")
     distance: Optional[Distance] = Field(None, description="The distance for the robot to move.")
     object: Optional[str] = Field(None, description="The object the robot should interact with.")
+    error: Optional[str] = Field(None, description="If the instruction was invalid or ambiguous, explain the problem.")
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
@@ -25,7 +26,7 @@ with open(instruction_file_path, "r") as f:
 model = "gemini-2.5-flash"
 
 root_agent = Agent(
-    name="named_entity_recognition",
+    name="robot_commands",
     description="A tool for identifying instructions for a hypothetical robot.",
     instruction=instruction,
     model=model,
