@@ -17,6 +17,8 @@ Implementing Calculator Tools
     explicitly guides it to use the available tools for calculations.
   - A clear and concise prompt is essential for effective tool utilization.
 - [agent.py] Create the ADK Agent instance (`root_agent = Agent(...)`)
+  - Show the model used ("flash" not "flash-lite"). Discuss how testing it 
+    to find the right version was important
   - This step shows how the agent is assembled, integrating its name,
     description, model, instructions from `agent-prompt.txt`, and the defined
     calculator tools.

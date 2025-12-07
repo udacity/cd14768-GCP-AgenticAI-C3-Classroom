@@ -15,6 +15,7 @@ Implementing Agent Tool Usage with ADK and Vertex AI Gemini Function Calling
     conversational style and tool usage strategy.
   - It demonstrates how agent behavior can be configured without modifying code.
 - [agent.py] Create the ADK Agent instance (`root_agent = Agent(...)`)
+  - Point out the model name selected
   - This is where the agent is assembled, integrating its name, description,
     model, instructions from `agent-prompt.txt`, and the defined weather tools.
   - It shows how ADK facilitates the creation of a functional LLM agent with tools.
@@ -24,6 +25,15 @@ Implementing Agent Tool Usage with ADK and Vertex AI Gemini Function Calling
   - navigate to the displayed URL in your browser.
 - demonstration
   - In the `adk web` chat interface, provide the prompt: "What's the weather like in London?"
+  - Notice that it doesn't seem to produce the result.
+    - This is due to a model that does not work well with tools
+    - go back and fix
+- [agent.py]
+  - Change the model to "gemini-2.5-flash"
+- re-start `adk web` 
+- demonstration
+  - Reload  the page
+  - Reprompt: "What's the weather in London?"
   - Observe the agent calling multiple weather tools and synthesizing a single,
     coherent response.
   - Show how clicking on each message shows debugging
