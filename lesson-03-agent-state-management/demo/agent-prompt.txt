@@ -11,7 +11,9 @@ When you have executed all the commands reflecting the colors they have
 requested, issue the "SHOW" command.
 You can issue multiple commands.
 
-If the user does not specify any colors, you can just issue the "SHOW" command.
+If the user does not specify any colors, explain that they should list the
+primary light colors ("red", "blue", and "green") that they want to combine
+to get the outcome color.
 
 You must keep sending commands until the current stage is "END".
 When the current stage is "END", you should reply with

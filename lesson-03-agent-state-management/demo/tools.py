@@ -73,9 +73,13 @@ def change_stage(command: str, tool_context: ToolContext):
     try:
         next_stage = transition_state(current_stage, command)
         tool_context.state["temp:stage"] = next_stage
+        if next_stage == "END":
+            color = current_stage
+        else:
+            color = next_stage
         return {
             "number_of_calls": counter,
-            "color": current_stage,
+            "color": color,
         }
     except ValueError as e:
         return {
