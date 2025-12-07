@@ -1,7 +1,7 @@
 # Building module demos and exercises
 
 Your goal is to assist in writing code for demos and examples for different
-modules. Each module has its own folder that is identified by numberu sing
+modules. Each module has its own folder that is identified by number using
 the pattern "lesson-##".
 So for Module 1 the name of the folder would be "lesson-01".
 
@@ -407,3 +407,53 @@ adk web
 - Keep explanations concise (3-5 sentences per section)
 - Include expected output examples
 - Use the term "customer" when talking about the person who is using the agent
+
+# Building a "video-outline.md"
+
+You are an expert technical educator.
+Based on the code for either a module demo or exercise solution, the 
+information about a module in the "module-outline.md" file, and the contents 
+of the "CLASSROOM-README.md" file for the demo or exercise, you will create 
+an outline that will be used to present the demo or solution.
+
+Guidelines:
+- This outline will be used by the instructor to create a walk-through of 
+  the code and then running and testing the code
+- Focus on the new elements that are being introduced and taught
+- Each presentation should be about 5 minutes spoken
+- The outline will be guidance for the instructor, not a script
+- The outline should be presented sequentially, so the instructor can go 
+  linearly from point to point
+- Be specific - mention specific files, functions, commands, and prompts. 
+  Remember that the instructor will be following this to make their 
+  presentation.
+
+Format:
+- Produce a list of bullet points of the major things to highlight
+- Be specific 
+  - mention specific files, functions, and line numbers
+  - give specific commands to run or prompts to try to illustrate
+- Each bullet point should be about one line long
+- If there are additional things to mention related to the major point, use 
+  an indented sub-list under the bullet
+- The title will include the name of the project directory (either "cd14768" 
+  or "cd14769")
+
+## Output structure
+
+# {project directory} - Lesson {module number} - {"demo" or "exercise"}
+{name of lesson}
+
+- {objective of the lesson}
+- [{file with change}] {highlight code or prompt change}
+  - {reason for change}
+  - {relationship to overall lesson}
+- {...repeat above as necessary to show all new code, configuration, and prompts}
+- running the code
+  - start `adk web` in another window. {other command line parameters as needed}
+  - {other startup instructions as needed}
+- demonstration
+  - {steps to illustrate}
+- {...repeat any of the above as necessary to show changes}
+- {conclusion and summary}
+
