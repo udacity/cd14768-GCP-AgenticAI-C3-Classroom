@@ -1,8 +1,21 @@
 # cd14768 - Lesson 5 - exercise
 Using a Currency Exchange API
 
-- In this solution walkthrough, we'll examine an agent that securely retrieves
-  an API key from Secret Manager to perform currency conversions.
+- In this solution walkthrough, we'll examine an agent that calls an 
+  API to do currency conversions. This API, however, uses an API Key, 
+  and we need to securely store and retrieve this key from the Google 
+  Cloud Secret Manager.
+  - Security is something of a chicken-and-egg problem. We want to secure
+    the credentials for a service (the API Keys for the Places and Routes
+    API), but the best way to do this is to store them in the Secret Manager,
+    which also requires credentials to access.
+  - How do we securely store the credentials for the Secret Manager?
+  - Google Cloud Application Default Credentials (ADC) is the solution to
+    this.
+    - A secure way from our local machine to authenticate ourselves to the
+      service.
+    - On Google Cloud resources (Cloud Run or Agent Engine), there is a
+      service account that we can permit to access the Secret Manager.
 - [Setup Walkthrough] Prerequisites
     - **ExchangeRate-API Key & Docs**: Go
       to [exchangerate-api.com](https://www.exchangerate-api.com/), sign up for
@@ -11,8 +24,11 @@ Using a Currency Exchange API
     - **Google Cloud Console**: Review:
         - Enabling "Secret Manager API".
         - The `exchangerate-api-key` in the Cloud Console Secret Manager.
-    - **Local Setup**: Mention the need for
-      `gcloud auth application-default login` to set up ADC.
+- [Setup Walkthrough] Local Authentication (ADC)
+    - Explain Application Default Credentials (ADC).
+    - Show the command `gcloud auth application-default login`.
+    - Explain that this command downloads a key file that the Google Cloud
+      libraries use automatically to verify your identity.
 - [tools.py] Review `get_api_key`
     - Highlight the use of `secretmanager.SecretManagerServiceClient`.
     - Explain that this client uses **ADC** (Application Default Credentials)
