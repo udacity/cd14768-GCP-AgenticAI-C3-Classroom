@@ -4,6 +4,17 @@ Implementing API Integration for Agents
 
 - In this demo, we'll see how to integrate external APIs (Google Places and
   Routes) securely using Google Cloud Secret Manager.
+  - Security is something of a chicken-and-egg problem. We want to secure 
+    the credentials for a service (the API Keys for the Places and Routes 
+    API), but the best way to do this is to store them in the Secret Manager,
+    which also requires credentials to access.
+  - How do we securely store the credentials for the Secret Manager?
+  - Google Cloud Application Default Credentials (ADC) is the solution to 
+    this.
+    - A secure way from our local machine to authenticate ourselves to the 
+      service.
+    - On Google Cloud resources (Cloud Run or Agent Engine), there is a 
+      service account that we can permit to access the Secret Manager.
 - [Setup Walkthrough] Google Cloud Console
     - **Enable APIs**: Explicitly walk through enabling "Google Places API
       (New)", "Google Routes API", and "Secret Manager API" in the API Library.
