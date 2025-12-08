@@ -25,6 +25,32 @@ Learning objectives:
 - A secret named `exchangerate-api-key` created in Secret Manager.
 - Application Default Credentials (ADC) configured locally.
 
+### Setup Instructions
+
+To run this solution, ensure you have completed the following setup steps:
+
+1. **Obtain API Key and Understand API**: Before interacting with the
+   ExchangeRate-API, you need to:
+    *   Get an API key from [https://www.exchangerate-api.com/](https://www.exchangerate-api.com/).
+    *   Review their **Documentation**, specifically the "Pair Conversion" endpoint
+        (`GET https://v6.exchangerate-api.com/v6/YOUR-API-KEY/pair/FROM/TO/AMOUNT`).
+        Understanding this structure is crucial for building the tool.
+
+2. **Enable APIs**:
+    * Go to the **Google Cloud Console**.
+    * Navigate to **APIs & Services > Library**.
+    * Enable **Secret Manager API**.
+
+3. **Create Secret**:
+    * Go to **Security > Secret Manager**.
+    * Create a secret named `exchangerate-api-key`.
+    * Paste your ExchangeRate-API key as the secret value.
+
+4. **Authenticate Locally (ADC)**:
+    * Run `gcloud auth application-default login` in your terminal.
+    * Run `gcloud config set project <YOUR_PROJECT_ID>`.
+    * Run `gcloud auth application-default set-quota-project <YOUR_PROJECT_ID>`.
+
 ---
 
 ## Understanding the Concept
