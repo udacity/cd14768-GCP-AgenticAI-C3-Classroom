@@ -58,12 +58,23 @@ be stolen and used to run up your bill.
 
 1. **Setup**: You create an API Key in Google Cloud Console and save it as a
    "Secret" in Secret Manager.
-2. **Tool Execution**: When the agent needs to check a route, the
-   `get_api_key()` function uses the Google Cloud client library to fetch the
+2. **Authentication**: 
+   * You run `gcloud auth application-default login` on your
+     machine. This saves your user credentials to a well-known location on your
+     file system.
+   * When you are running this on a Google Cloud service, such as Cloud Run 
+     or Agent Engine, it will use the service account credentials for that 
+     service.
+3. **Tool Execution**: When the agent needs to check a route, the
+   `get_api_key()` function uses the Google Cloud client library, which
+   automatically finds your credentials and authenticates you, to fetch the
    key from Secret Manager.
-3. **API Call**: The tool uses this key to authenticate requests to the Places
+   * Note that this means that the account you have credentials for (either 
+     you or the service account) needs to be permitted to access the Secret 
+     Manager. 
+4. **API Call**: The tool uses this key to authenticate requests to the Places
    and Routes APIs.
-4. **Result**: The APIs return JSON data (coordinates, distance, duration),
+5. **Result**: The APIs return JSON data (coordinates, distance, duration),
    which the tool parses and returns to the agent.
 
 ### Key Terms
@@ -74,7 +85,7 @@ keys, passwords, certificates, and other sensitive data.
 **Application Default Credentials (ADC)**: A strategy used by Google Cloud
 client libraries to automatically find credentials. In a local environment, it
 uses your user credentials that you have configured using the `gcloud` command;
-in Google Cloud, it uses the attached Service Account for the service you 
+in Google Cloud, it uses the attached Service Account for the service you
 are running on.
 
 **Google Routes API**: A Google Maps Platform API that provides comprehensive
@@ -89,12 +100,14 @@ To run this demo, you must set up your Google Cloud environment.
 
 ### 1. Enable APIs
 
-In your Google Cloud Project, enable the following APIs:
+You need to explicitly enable the services we are going to use.
 
-* **Google Places API (New)** (Note: Ensure you select the "New" version if
-  prompted).
-* **Google Routes API**
-* **Secret Manager API**
+1. Open the **Google Cloud Console** and use the search bar at the top or
+   navigate to **APIs & Services > Library**.
+2. Search for and enable **Google Places API (New)**. (Important: Make sure it
+   says "(New)" or "v1").
+3. Search for and enable **Google Routes API**.
+4. Search for and enable **Secret Manager API**.
 
 ### 2. Create an API Key
 
@@ -112,14 +125,28 @@ In your Google Cloud Project, enable the following APIs:
 4. Secret value: Paste the API key you copied.
 5. Click **Create Secret**.
 
-### 4. Authenticate Locally
+### 4. Authenticate Locally (Set up ADC)
 
-Ensure your local environment can access the project and the secret:
+To allow your local Python script to access the Secret Manager in the cloud, you
+must establish Application Default Credentials. Run the following commands in
+your terminal:
 
 ```bash
+# 1. Login and create the ADC file
 gcloud auth application-default login
+
+# 2. Ensure your gcloud config points to the correct project
 gcloud config set project <YOUR_PROJECT_ID>
+
+# 3. Set the quota project for billing/quota purposes (often same as your project)
+gcloud auth application-default set-quota-project <YOUR_PROJECT_ID>
 ```
+
+**Why do we do this?** The `gcloud auth application-default login` command opens
+a browser window for you to log in. Once authenticated, it creates a JSON
+credential file at `~/.config/gcloud/application_default_credentials.json` (or
+similar). The Google Cloud Python libraries automatically detect this file and
+use it to authorize requests.
 
 ---
 
@@ -153,13 +180,15 @@ SECRET_ID = "places-api-key"
 
 def get_api_key():
   """Gets the API key from Secret Manager."""
+  # The client library automatically looks for ADC here!
   client = secretmanager.SecretManagerServiceClient()
   name = f"projects/{PROJECT_ID}/secrets/{SECRET_ID}/versions/latest"
   response = client.access_secret_version(name=name)
   return response.payload.data.decode("UTF-8")
 ```
 
-**Why it matters**: The sensitive key is never in the source code.
+**Why it matters**: The sensitive key is never in the source code. ADC handles
+the authentication to fetch it from the Secret Manager.
 
 ### Step 2: Places API Integration (`tools.py`)
 
@@ -219,6 +248,12 @@ distance and duration, keeping the response small and cost-effective.
 - **Cause**: The user or service account running the code does not have the
   `Secret Manager Secret Accessor` role on the specific secret or the project.
 - **Solution**: Check IAM permissions in the Cloud Console.
+
+**Error**: `google.auth.exceptions.DefaultCredentialsError`.
+
+- **Cause**: ADC is not set up. The code cannot find credentials to talk to
+  Secret Manager.
+- **Solution**: Run `gcloud auth application-default login`.
 
 **Error**: `403 Forbidden` from Routes/Places API.
 
