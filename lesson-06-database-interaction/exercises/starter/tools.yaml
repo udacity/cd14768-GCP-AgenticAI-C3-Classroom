@@ -1,0 +1,13 @@
+sources:
+  warehouse:
+    kind: mysql
+    host: ${MYSQL_HOST}
+    port: ${MYSQL_PORT:3306}
+    database: warehouse
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+tools:
+  # TODO: Define 'add_product' tool
+  # TODO: Define 'get_product' tool
+  # TODO: Define 'update_product_stock' tool
+  # TODO: Define 'log_audit' tool
