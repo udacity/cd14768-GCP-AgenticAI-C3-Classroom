@@ -38,9 +38,10 @@ To create a Cloud Storage bucket and upload to it:
 6. You'll be taken to an (empty) file listing. You can drag and drop the 
    files from the "docs" directory here.
 
-To create your AI Application and data store:
-1. In the Google Cloud Console, go to the "AI Application" configuration. 
-   (Hint: You can search for it in the search bar)
+To create your Vertex AI Search Application and data store:
+1. In the Google Cloud Console, go to the "Vertex AI Search" configuration. 
+   (Hint: You can search for it in the search bar, you can also search for 
+   "AI Application".)
 2. Select "Create App"
 3. Select "Custom search (general)"
 4. Leave the app settings unchanged

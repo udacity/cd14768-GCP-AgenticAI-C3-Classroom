@@ -94,8 +94,8 @@ This demo requires significant setup in the Google Cloud Console.
 
 ### 2. Vertex AI Search (Data Store)
 
-1. In the Google Cloud Console, go to the "AI Application" configuration. 
-   (Hint: You can search for "AI Applications" in the search bar).
+1. In the Google Cloud Console, go to the "Vertex AI Search" configuration. 
+   (Hint: You can also search for "AI Applications" in the search bar).
 2. Create a new search app of **Custom Search (general)**.
 3. Leave the app settings unchanged (you want Enterprise edition features 
    and Generative responses and leave the location as "global").
