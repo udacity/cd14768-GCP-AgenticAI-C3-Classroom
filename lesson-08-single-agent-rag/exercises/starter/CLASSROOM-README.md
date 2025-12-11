@@ -96,30 +96,92 @@ superhero universe. You will first create the content for this universe, set up
 the necessary Google Cloud infrastructure, and then implement the ADK agent to
 interact with it.
 
+### Google Cloud Setup
+
+This exercise requires significant setup in the Google Cloud Console.
+
+#### 1. Generate Documents
+
+Create at least 30 documents using Gemini or Gemini CLI, saving them as individual
+files (e.g., Markdown or PDF).
+
+- 10 documents detailing brand new superheroes (one hero per file).
+- 10 documents detailing brand new supervillains (one villain per file).
+- 10 documents describing a television series (one series per document),
+  each centered around one of your superheroes. Each series should have at
+  least 12 episodes, include the hero's origin story, and feature at least
+  one crossover episode with another hero or villain.
+
+#### 2. Google Cloud Storage (GCS)
+
+1. In the Google Cloud Console, go to the "Cloud Storage" configuration.
+   (Hint: You can search for it in the search bar).
+2. Select "Create bucket".
+3. Choose a unique name (e.g., `my-superhero-docs-bucket`) and a
+   region (e.g., `us-central1`).
+4. Select "Create".
+5. If there is a pop-up about Public access, confirm that you want
+   Enforce public access prevention enabled.
+6. Upload your generated superhero, supervillain, and TV series
+   documents into this bucket.
+
+#### 3. Vertex AI Search
+
+1. In the Google Cloud Console, go to the "AI Application"
+   configuration. (Hint: You can search for "AI Applications" in the
+   search bar).
+2. Select "Create App".
+3. Choose an app type of "Custom Search (general)".
+4. Leave the app settings unchanged (you want Enterprise edition
+   features and Generative responses, and leave the location as
+   "global").
+5. Enter an App name (e.g., "Superhero-FAQ-App"), a company name for the
+   app, and select Continue.
+6. You'll be taken to the Data Stores page. Select "Create Data Store":
+    * Select "Cloud Storage" as the source.
+    * Browse and select the GCS bucket you created previously.
+    * Select "Unstructured documents" (PDF and markdown files are unstructured. 
+      Things like CSV files are structured.).
+    * Select a one time synchronization frequency.
+    * Leave other settings alone for now and select Continue.
+    * Enter a Data store name (e.g., "Superhero-Data-Store"). It is
+      usually a good idea to give it a name based on the App name you
+      chose.
+    * Leave the other configuration settings as default and select
+      Continue.
+    * Select General Pricing and select Create.
+7. **Link Data Store**: Select the data store you just created and
+   click "Continue".
+8. **Select Pricing Model**: Leave it set to General Pricing and select
+   Create.
+9. **Wait**: The indexing process takes a few minutes. Check the "Data"
+   left navigation to see the "Activity" and then the "Documents" once
+   imported.
+10. **Get Configuration Values**: After creation, you can click on the
+    "AI Applications" name in the left navigation to return to the list
+    of all the Apps.
+    * Note the **Location** of your App (usually `global`).
+    * Find the **App ID** in the list of apps. This is the value you
+      need for `DATASTORE_ENGINE_ID` in your `.env` file.
+    * Note your **Project ID**. This is usually the same as the Project
+      ID you're using for Vertex AI Gemini, and you'll need it for
+      `GOOGLE_CLOUD_PROJECT` and `DATASTORE_PROJECT_ID` in your `.env`
+      file.
+
+#### 4. Authenticate
+
+Run `gcloud auth application-default login` in your terminal to allow the local
+script to access the Discovery Engine API.
+
 ### Requirements
 
 Your implementation must:
 
-1. **Generate Documents**: Create at least 30 documents using Gemini or Gemini
-   CLI, saving them as individual files (e.g., Markdown or PDF, though plain
-   text is easiest for this exercise).
-    * 10 documents detailing brand new superheroes (one hero per file).
-    * 10 documents detailing brand new supervillains (one villain per file).
-    * 10 documents describing a television series (one series per document),
-      each centered around one of your superheroes. Each series should have at
-      least 12 episodes, include the hero's origin story, and feature at least
-      one crossover episode with another hero or villain.
-2. **Google Cloud Setup**:
-    * Create a Google Cloud Storage bucket and upload your generated documents.
-    * Create a Vertex AI Search App and Data Store, linking it to your GCS
-      bucket.
-    * Obtain the `PROJECT_ID`, `LOCATION`, and `ENGINE_ID` for your setup.
-    * Authenticate your local environment to access the Discovery Engine API.
-3. **Implement `datastore.py`**: Complete the `datastore_search_tool` function
+1. Implement `datastore.py`: Complete the `datastore_search_tool` function
    to correctly call the `search` function with environment variables.
-4. **Implement `agent.py`**: Configure the `root_agent` to use your implemented
+2. Implement `agent.py`: Configure the `root_agent` to use your implemented
    `datastore_search_tool`.
-5. **Agent Prompt**: Write an `agent-prompt.txt` that instructs the agent on how
+3. Agent Prompt: Write an `agent-prompt.txt` that instructs the agent on how
    to use the search tool and answer questions about your superhero universe.
 
 ### Repository Structure
@@ -245,7 +307,6 @@ def datastore_search_tool(search_query: str):
       search_query (str): What information about the store the customer is looking for
   """
   # TODO: Call the search function with the appropriate environment variables
-  pass
 ```
 
 **`agent-prompt.txt`**
@@ -296,74 +357,23 @@ Captain Comet is a superhero with the ability to manipulate cosmic energy. He ga
     * You can use Gemini's free tier or the Gemini CLI to generate the content.
       For example, a prompt could be: "Generate a detailed origin story and
       powers for a new superhero named 'Captain Comet'." Save each generated
-      response into a separate `.txt` or `.md` file.
+      response into a separate `.pdf` or `.md` file.
     * Ensure each document is sufficiently detailed to provide a good answer to
       potential questions.
     * Remember to save all documents into a `docs` folder that you will create
       within your `exercises/starter` directory.
-2. **GCP Setup**:
-    * **Google Cloud Storage**:
-        1. In the Google Cloud Console, go to the "Cloud Storage"
-           configuration. (Hint: You can search for it in the search bar).
-        2. Select "Create bucket".
-        3. Choose a unique name (e.g., `my-superhero-docs-bucket`) and a
-           region (e.g., `us-central1`).
-        4. Select "Create".
-        5. If there is a pop-up about Public access, confirm that you want
-           Enforce public access prevention enabled.
-        6. Upload your generated superhero, supervillain, and TV series
-           documents into this bucket.
-    * **Vertex AI Search**:
-        1. In the Google Cloud Console, go to the "AI Application"
-           configuration. (Hint: You can search for "AI Applications" in the
-           search bar).
-        2. Select "Create App".
-        3. Choose an app type of "Custom Search (general)".
-        4. Leave the app settings unchanged (you want Enterprise edition
-           features and Generative responses, and leave the location as "
-           global").
-        5. Enter an App name (e.g., "Superhero-FAQ-App"), a company name for the
-           app, and select Continue.
-        6. You'll be taken to the Data Stores page. Select "Create Data Store":
-            * Select "Cloud Storage" as the source.
-            * Browse and select the GCS bucket you created previously.
-            * Select "Unstructured documents" (e.g., PDF, HTML, etc. - your text
-              files will be treated as unstructured).
-            * Select a one time synchronization frequency.
-            * Leave other settings alone for now and select Continue.
-            * Enter a Data store name (e.g., "Superhero-Data-Store"). It is
-              usually a good idea to give it a name based on the App name you
-              chose.
-            * Leave the other configuration settings as default and select
-              Continue.
-            * Select General Pricing and select Create.
-        7. **Link Data Store**: Select the data store you just created and
-           click "Continue".
-        8. **Select Pricing Model**: Leave it set to General Pricing and select
-           Create.
-        9. **Wait**: The indexing process takes a few minutes. Check the "Data"
-           left navigation to see the "Activity" and then the "Documents" once
-           imported.
-        10. **Get Configuration Values**: After creation, you can click on the "
-            AI Applications" name in the left navigation to return to the list
-            of all the Apps.
-            * Note the **Location** of your App (usually `global`).
-            * Find the **App ID** in the list of apps. This is the value you
-              need for `DATASTORE_ENGINE_ID` in your `.env` file.
-            * Note your **Project ID**. This is usually the same as the Project
-              ID you're using for Vertex AI Gemini, and you'll need it for
-              `GOOGLE_CLOUD_PROJECT` and `DATASTORE_PROJECT_ID` in your `.env`
-              file.
-    * **Authenticate**: Run `gcloud auth application-default login` in your
-      terminal to allow the local script to access the Discovery Engine API.
-3. **`datastore_search_tool` Implementation**: The `search` function is provided
-   as boilerplate. Your task is to implement `datastore_search_tool` to
-   correctly call this `search` function using the environment variables set in
-   your `.env` file for `project_id`, `location`, and `engine_id`.
-4. **`agent.py` Integration**: Import `datastore_search_tool` from
+2. **`datastore_search_tool` Implementation**: 
+    * The `search` function is provided as boilerplate. You should read 
+      through it, and the documentation linked, to get an idea of what 
+      other options are available, but these tend to work fairly well for 
+      our use case. 
+    * Your task is to implement `datastore_search_tool` to correctly call 
+      this `search` function using the environment variables set in 
+      your `.env` file for `project_id`, `location`, and `engine_id`.
+3. **`agent.py` Integration**: Import `datastore_search_tool` from
    `datastore.py` and add it to the `tools` list in your `root_agent`
    definition.
-5. **`agent-prompt.txt`**: Craft a clear prompt that guides your
+4. **`agent-prompt.txt`**: Craft a clear prompt that guides your
    `superhero_faq_agent` to use the `datastore_search_tool` whenever asked
    questions related to superheroes, supervillains, or TV series. Instruct it to
    provide grounded answers based on the retrieved information.
