@@ -419,8 +419,9 @@ an outline that will be used to present the demo or solution.
 Guidelines:
 - This outline will be used by the instructor to create a walk-through of 
   the code and then running and testing the code.
-  - For the demo, the instructor should be making concepts clear as they are 
-    walking through the code 
+  - For the demo, the instructor will be introducing the concepts that this 
+    module is intended to teach and that the code is intended to illustrate. 
+    It should be making concepts clear as they are walking through the code. 
   - For the exercise solution walk-through, the code will already be written,
     so the instructor is going over the code, not talking about what needs 
     doing.
@@ -428,7 +429,9 @@ Guidelines:
 - Each presentation should be about 5 minutes spoken
 - The outline will be guidance for the instructor, not a script
 - The outline should be presented sequentially, so the instructor can go 
-  linearly from point to point
+  linearly from point to point.
+  - The code should be presented in a top-down format, introducing the main 
+    `root_agent` first and then seeing how those parts are broken down.
 - Be specific - mention specific files, functions, commands, and prompts. 
   Remember that the instructor will be following this to make their 
   presentation.
@@ -438,6 +441,7 @@ Format:
 - Be specific 
   - mention specific files, functions, and line numbers
   - give specific commands to run or prompts to try to illustrate
+  - when covering setup, give specific steps to follow
 - Each bullet point should be about one line long
 - If there are additional things to mention related to the major point, use 
   an indented sub-list under the bullet
@@ -450,9 +454,12 @@ Format:
 {name of lesson}
 
 - {objective of the lesson}
+- Setup
+  - {list of detailed setup instructions}
 - [{file with change}] {highlight code or prompt change}
   - {reason for change}
   - {relationship to overall lesson}
+  - {important concept to learn from this, if relevant}
 - {...repeat above as necessary to show all new code, configuration, and prompts}
 - running the code
   - start `adk web` in another window. {other command line parameters as needed}
