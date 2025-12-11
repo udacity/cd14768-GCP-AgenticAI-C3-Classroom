@@ -17,7 +17,7 @@ indexing it, and querying it via code.
 
 Learning objectives:
 
-- Configure Google Cloud Storage and Vertex AI Agent Builder for RAG.
+- Configure Google Cloud Storage and Vertex AI Search for RAG.
 - Implement a search tool using the `google.cloud.discoveryengine` library.
 - Understand the `search` function configuration (content specs, query
   expansion).
@@ -45,19 +45,19 @@ information to the model dynamically.
 **RAG (Retrieval-Augmented Generation)** is the industry standard solution.
 
 1. **Ingestion**: You upload documents to Google Cloud Storage.
-2. **Indexing**: Vertex AI Agent Builder processes these documents into a 
+2. **Indexing**: Vertex AI Search processes these documents into a 
    "Data Store", chunking them into smaller pieces and creating a semantically 
    searchable index. 
 3. **Retrieval**: When a user asks a question, your code makes an API call 
-   to the Agent Builder Discovery Engine API to search for relevant chunks that 
+   to the Discovery Engine API to search for relevant chunks that 
    semantically match the question.
 4. **Generation**: The chunks are passed to the LLM, which synthesizes an answer
    based *only* on that retrieved context.
 
 ### How It Works
 
-1. **Setup**: You create a "Data Store" in Vertex AI Agent Builder linked to
-   your GCS bucket.
+1. **Setup**: You create a "Search App" and "Data Store" in Vertex AI Search 
+   linked to your GCS bucket.
 2. **Tool Execution**: The `datastore_search_tool` in `datastore.py` uses the
    Google Cloud Discovery Engine client library to query this Data Store.
 3. **Search Configuration**: The search request is configured to return
@@ -69,7 +69,7 @@ information to the model dynamically.
 
 ### Key Terms
 
-**Vertex AI Agent Builder (Discovery Engine)**: Google's platform for building
+**Vertex AI Search (Discovery Engine)**: Google's platform for building
 search and chat applications using RAG. It handles the complex infrastructure of
 vector databases and indexing.
 
@@ -92,16 +92,15 @@ This demo requires significant setup in the Google Cloud Console.
    `my-financial-docs-bucket`) and a region (e.g., `us-central1`).
 3. Upload the sample PDF files from the `docs` folder into this bucket.
 
-### 2. Vertex AI Agent Builder (Data Store)
+### 2. Vertex AI Search (Data Store)
 
-1. Go to the "Agent Builder" or "Gen App Builder" in the console by 
-   searching for **AI Applications** using the Google Cloud Console search bar.
-2. Select **Create App**.
-3. Choose an app type of **Custom Search (general)**.
-4. Leave the app settings unchanged (you want Enterprise edition features 
+1. In the Google Cloud Console, go to the "AI Application" configuration. 
+   (Hint: You can search for "AI Applications" in the search bar).
+2. Create a new search app of **Custom Search (general)**.
+3. Leave the app settings unchanged (you want Enterprise edition features 
    and Generative responses and leave the location as "global").
-5. Enter an App name, a company name for the app, and select Continue.
-6. You'll be taken to the data stores page. Select **Create a Data Store**:
+4. Enter an App name, a company name for the app, and select Continue.
+5. You'll be taken to the data stores page. Select **Create a Data Store**:
     * Select **Cloud Storage** as the source.
     * Browse and select the bucket you created.
     * Select **Unstructured documents** (PDF, HTML, etc.).
@@ -111,11 +110,15 @@ This demo requires significant setup in the Google Cloud Console.
       based on the App name you chose.
     * Leave the other configuration settings as default and select Continue.
     * Select General Pricing and select Create.
-7. **Link Data Store**: Select the data store you just created and click 
+6. **Link Data Store**: Select the data store you just created and click 
    **Continue**.
-8. **Select Pricing Model**: Leave it set to General Pricing and select Create.
-9. **Wait**: The indexing process takes a few minutes. Check the "Data" left 
+7. **Select Pricing Model**: Leave it set to General Pricing and select Create.
+8. **Wait**: The indexing process takes a few minutes. Check the "Data" left 
    navigation to see the "Activity" and then the "Documents" once imported.
+
+In the future, you can get back to this page by going to the Vertex AI 
+Search page and selecting "See existing apps". You can also search for "AI 
+Applications".
 
 ### 3. Get Configuration Values
 
