@@ -9,7 +9,8 @@ with open(instruction_file_path, "r") as f:
 
 model = "gemini-2.5-flash"
 
-tools = [datastore_search_tool]
+# TODO: Add the datastore_search_tool to the tools list
+tools = []
 
 root_agent = Agent(
     name="superhero_faq_agent",
