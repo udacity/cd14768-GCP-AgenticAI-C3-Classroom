@@ -5,13 +5,39 @@ Bank
 
 - Objective: Learn to implement long-term agent memory using ADK and Vertex AI
   Agent Engine Memory Bank.
+- What is the Memory Service?
+    - A service that provides persistent storage for agent interactions.
+    - It uses AI to summarize and index conversations.
+    - Hooks in ADK allow it to save the conversation summary, and then 
+      reload it during another session.
+    - The conversation summary is included as part of the prompt sent to the 
+      LLM.
+    - **Why it's useful**: Allows agents to maintain context across different
+      sessions and long periods of time, creating a more personalized and
+      intelligent experience without managing complex database schemas manually.
+- Comparison with Session/User State
+    - **Session State**: 
+      - Ephemeral key/value data for current conversation (e.g., itinerary).
+      - Reset for each session
+      - Read and write through a tool and prompts can be written to include 
+        values.
+    - **User State**: 
+      - Simple key-value pairs (e.g., favorite color). 
+      - Structured but limited.
+      - Read and write through a tool and prompts can be written to include
+        values.
+    - **Agent Engine Memory**: 
+      - Unstructured, semantic summaries. 
+      - "Fuzzy" recall of concepts over time.
+      - Pre-defined hooks to save the summary after every exchange and 
+        include the summary in every prompt. 
 - Setup (Prerequisites for running the code)
-  - Now that we understand the code, let's set up the backend it needs.
-  - Navigate to `notes` directory.
-  - Run `python create_agent_engine.py` to create an Agent Engine instance.
-  - Copy the resource name output by the script.
-  - Update `.env` with `AGENT_ENGINE_ID=<resource name>`,
-    `AGENT_ENGINE_PROJECT`, and `AGENT_ENGINE_LOCATION`.
+    - Now that we understand the code, let's set up the backend it needs.
+    - Navigate to `notes` directory.
+    - Run `python create_agent_engine.py` to create an Agent Engine instance.
+    - Copy the resource name output by the script.
+    - Update `.env` with `AGENT_ENGINE_ID=<resource name>`,
+      `AGENT_ENGINE_PROJECT`, and `AGENT_ENGINE_LOCATION`.
 - [agent.py] `root_agent` Initialization
     - Start by showing the `root_agent` definition.
     - Highlight `model="gemini-2.5-flash"` and `tools` list.
@@ -30,7 +56,7 @@ Bank
     - Show the `tools` list containing `preload_memory_tool`.
     - Explain that while the callback *saves* memory, this tool *loads* relevant
       past memories into the agent's context before it generates a response.
-    - Not a typical tool - we won't see it listed as a tool or the LLM 
+    - Not a typical tool - we won't see it listed as a tool or the LLM
       request to call it.
 - [agent.py] Imports and Environment Configuration
     - Scroll to the top to show the imports: `preload_memory_tool`,
