@@ -50,20 +50,22 @@ interactions.
 
 ### How It Works
 
-**Step 1: Save Conversation**
-ADK session event hooks are used to intercept and save a copy of each session's
-conversation into the Vertex AI Agent Engine Memory Bank. This ensures that all
-interactions are recorded for future reference.
+**Step 1: Save and Summarize Conversation**
+ADK session event hooks are used to intercept and save each session's
+conversation into the Vertex AI Agent Engine Memory Bank, indexed by the 
+user's name. The Memory Bank automatically summarizes conversations, 
+identifying key facts and topics.
 
-**Step 2: Summarize and Integrate**
-The Memory Bank automatically summarizes conversations, identifying key facts
-and topics. These summaries are then incorporated into future conversations,
-allowing the agent to recall past interactions and provide relevant context.
+**Step 2: Integrate into Future Conversations**
+These summaries are then incorporated into the system instructions for future 
+conversations, allowing the agent to recall past interactions and provide 
+relevant context.
 
 ### Key Terms
 
 **Long-Term Memory**: The ability of an agent to retain and recall information
-over extended periods and across multiple sessions.
+over extended periods and across multiple sessions. ADK provides hooks in to 
+various implementations.
 
 **Vertex AI Agent Engine Memory Bank**: A service that provides persistent
 storage and summarization for agent conversations, enabling long-term memory.
@@ -103,12 +105,9 @@ from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools.preload_memory_tool import preload_memory_tool
 
-agent_engine_project = os.environ.get(
-  "AGENT_ENGINE_PROJECT")  # Environment variable for GCP Project ID
-agent_engine_location = os.environ.get(
-  "AGENT_ENGINE_LOCATION")  # Environment variable for GCP Location
-agent_engine_id = os.environ.get(
-  "AGENT_ENGINE_ID")  # Environment variable for Agent Engine ID
+agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")  # Environment variable for GCP Project ID
+agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")  # Environment variable for GCP Location
+agent_engine_id = os.environ.get("AGENT_ENGINE_ID")  # Environment variable for Agent Engine ID
 
 
 # Callback function to save the session to memory bank
@@ -165,9 +164,10 @@ your present conversation.
 
 **Key points:**
 
-- The prompt instructs the agent to remember and incorporate past conversations.
-- This guides the LLM to access and utilize the session data stored in the
-  Memory Bank.
+- The prompt makes the LLM aware that it is working both with the current 
+  and past conversations.
+- Additional information about the past conversations will be injected into 
+  the prompt by the ADK.
 
 ### Complete Example
 
