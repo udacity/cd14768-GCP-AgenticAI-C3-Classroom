@@ -22,9 +22,9 @@ Learning objectives:
 
 ### Prerequisites
 
-- Completion of the Module 9 Demo.
 - Understanding of ADK tools and agents.
-- A configured Agent Engine instance.
+- Understanding how to integrate Grounding with Google Search and other tools 
+  in the ADK.
 
 ---
 
@@ -75,7 +75,7 @@ agent's memory.
     ```
 
 2.  **Create Agent Engine Instance**:
-    Navigate to the `lesson-09-long-term-agent-memory/notes` folder and run the
+    Navigate to the `notes` folder and run the
     creation script:
 
     ```bash
