@@ -1,7 +1,7 @@
 import os
 from google.adk.agents import Agent
 
-# TODO: Define the tools we need
+# TODO: Create 4 calculator tools: (for addition, subtraction, multiplication, and division)
 
 # Experiment with the different models to see what works better
 model = "gemini-2.5-flash"
@@ -13,7 +13,7 @@ instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
 with open(instruction_file_path, "r") as f:
     instruction = f.read()
 
-# TODO: Add the tools to this list
+# TODO: Add your tools to this list
 tools = [
 ]
 
