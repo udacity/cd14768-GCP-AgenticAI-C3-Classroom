@@ -76,6 +76,46 @@ saving conversation data.
 
 ---
 
+## Setting up Agent Engine Memory Bank
+
+To use the long-term memory features, you need to create an Agent Engine
+instance.
+
+### Prerequisites
+
+Ensure you have your `.env` file set up with the following variables:
+
+```bash
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=<your project ID>
+GOOGLE_CLOUD_LOCATION=us-central1
+```
+
+Replace `<your project ID>` with your actual Google Cloud Project ID.
+`us-central1` is recommended for the location.
+
+### Creating the Instance
+
+1.  There is a `notes` folder that contains a `create_agent_engine.py` script.
+2.  Run the `create_agent_engine.py` script:
+    ```bash
+    python create_agent_engine.py
+    ```
+3.  The script will output a **resource name**. Copy this value.
+4.  Add the resource name to your `.env` file. You will need to set the
+    following variables based on the output and your project details:
+
+    ```bash
+    AGENT_ENGINE_PROJECT=<your project ID>
+    AGENT_ENGINE_LOCATION=<your Google Cloud location>
+    AGENT_ENGINE_ID=<resource name from script>
+    ```
+
+If you lose the resource name, you can find it in the Google Cloud Console under
+the Agent Engine configuration page.
+
+---
+
 ## CODE WALKTHROUGH
 
 ---
