@@ -114,6 +114,19 @@ Replace `<your project ID>` with your actual Google Cloud Project ID.
 If you lose the resource name, you can find it in the Google Cloud Console under
 the Agent Engine configuration page.
 
+### Viewing Memory in Google Cloud Console
+
+To verify that conversations are being saved and to explore the stored memory:
+
+1.  Visit the [Google Cloud Console](https://console.cloud.google.com/).
+2.  In the search bar, type "Agent Engine" and select the service.
+3.  Select the Agent Engine instance you created.
+4.  Select the "Memories" tab.
+5.  You will see the saved information for a user for each app you have 
+    using the Agent Engine.
+6.  You can hover over the "Fact" column to see the summary that is stored, 
+    or click on the three-dot menu on the right and select "Edit".
+
 ---
 
 ## CODE WALKTHROUGH
