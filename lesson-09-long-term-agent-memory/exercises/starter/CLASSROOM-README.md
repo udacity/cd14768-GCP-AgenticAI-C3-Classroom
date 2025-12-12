@@ -24,7 +24,7 @@ Learning objectives:
 
 - Completion of the Module 9 Demo.
 - Understanding of ADK tools and agents.
-- A configured Agent Engine instance (from the demo or a new one).
+- A configured Agent Engine instance.
 
 ---
 
@@ -32,10 +32,9 @@ Learning objectives:
 
 ### The Problem
 
-A research assistant often needs to perform multiple searches over time to
-gather information. If the agent forgets previous findings as soon as the
-session ends, the user has to re-explain context or re-run searches, which is
-inefficient.
+A research assistant often needs to perform multiple searches over time to gather
+information. If the agent forgets previous findings as soon as the session ends,
+the user has to re-explain context or re-run searches, which is inefficient.
 
 ### The Solution
 
@@ -60,6 +59,42 @@ search strategy.
 
 ## Exercise Instructions
 
+### Setup: Agent Engine Memory Bank
+
+Before writing any code, you must set up the backend service that will store the
+agent's memory.
+
+1.  **Configure Environment**:
+    Ensure you have your `.env` file set up (copy from `.env-sample`). You need
+    the basic Google Cloud configuration:
+
+    ```bash
+    GOOGLE_GENAI_USE_VERTEXAI=TRUE
+    GOOGLE_CLOUD_PROJECT=<your project ID>
+    GOOGLE_CLOUD_LOCATION=us-central1
+    ```
+
+2.  **Create Agent Engine Instance**:
+    Navigate to the `lesson-09-long-term-agent-memory/notes` folder and run the
+    creation script:
+
+    ```bash
+    python create_agent_engine.py
+    ```
+
+3.  **Update Configuration**:
+    The script will output a **resource name**. Copy this value and update your
+    `.env` file with the following variables:
+
+    ```bash
+    AGENT_ENGINE_PROJECT=<your project ID>
+    AGENT_ENGINE_LOCATION=<your location>
+    AGENT_ENGINE_ID=<resource name from script>
+    ```
+
+    *Note: If you lose the resource name, you can find it in the Google Cloud
+    Console by searching for "Agent Engine" and viewing your instance details.*
+
 ### Your Task
 
 Build a "Research Assistant" agent that uses Google Search to answer questions
@@ -70,13 +105,16 @@ across sessions.
 
 Your implementation must:
 
-1. Configure the agent to use the Agent Engine environment variables.
-2. Implement the `auto_save_session_to_memory_callback` to save sessions.
-3. Add the `preload_memory_tool` to the agent's tool list alongside the
-   `search_agent_tool`.
-4. Register the callback with the `root_agent`.
-5. Complete the `agent-prompt.txt` to instruct the agent to use its memory and
-   search capabilities.
+1.  **Configure Environment**: Read the Agent Engine variables from the
+    environment.
+2.  **Implement Callback**: Write the `auto_save_session_to_memory_callback` to
+    save the current session to the memory service.
+3.  **Configure Tools**: Add both the `search_agent_tool` (provided) and the
+    `preload_memory_tool` to the agent's tool list.
+4.  **Register Callback**: Ensure the `root_agent` calls your saving callback
+    after each turn.
+5.  **Write Prompts**: Complete `agent-prompt.txt` to instruct the agent to use
+    memory, and `search-prompt.txt` to guide the search helper.
 
 ### Repository Structure
 
@@ -91,11 +129,11 @@ Your implementation must:
 └── search_agent.py     # provided: Helper agent for Google Search
 ```
 
-Make sure you copy `.env-sample` to `.env` and edit it to add the Google
-Cloud project and Agent Engine details you are working with.
-
-**Note:** You can reuse the `AGENT_ENGINE_ID` from the demo, or create a new one
-using the script in the `notes` folder.
+**Note on Search Tool**:
+The `search_agent.py` file contains a fully configured ADK agent that wraps the
+Google Search tool. You do not need to modify this file. It is imported as
+`search_agent_tool` in your main `agent.py` and simply needs to be added to
+your tool list.
 
 ### Starter Code
 
@@ -106,23 +144,33 @@ integration.
 import os
 from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
-from .search_agent import search_agent_tool
-# TODO: Import the preload memory tool
+# TODO: Import the preload memory tool and search agent tool
 
 # TODO: Get environment variables for Agent Engine
 
-# TODO: Create the callback function to save session to memory
-# async def auto_save_session_to_memory_callback(callback_context: CallbackContext):
-#     pass
+async def auto_save_session_to_memory_callback(callback_context: CallbackContext):
+    # TODO: Create the callback function to save session to memory
+    pass
+
+# ... (agent setup) ...
+
+tools = [
+    # TODO: Add the tools we need
+]
+
+root_agent = Agent(
+    # ...
+    # TODO: Register the callback
+)
 ```
 
 ### Expected Behavior
 
-1. **Session 1**: You ask the agent to search for "latest features of Python
-   3.12". The agent searches and summarizes the findings.
-2. **Session 2**: You ask "What did we find out about Python 3.12?". The agent
-   should answer based on the memory of the previous session without needing to
-   search again.
+1.  **Session 1**: You ask the agent to search for "latest features of Python
+    3.12". The agent searches and summarizes the findings.
+2.  **Session 2**: You ask "What did we find out about Python 3.12?". The agent
+    should answer based on the memory of the previous session without needing to
+    search again.
 
 **Running the agent:**
 
@@ -145,31 +193,29 @@ User: When is the new Python coming out?
 Agent: As we found in our last research, Python 3.13 is expected in October 2024.
 ```
 
+### Verification: Viewing Memory in Cloud Console
+
+To confirm that your agent is successfully saving memories:
+
+1.  Visit the [Google Cloud Console](https://console.cloud.google.com/).
+2.  In the search bar at the top, type **"Agent Engine"** and select the
+    service.
+3.  Click on the name of the Agent Engine instance you created during setup.
+4.  Select the **"Memories"** tab.
+5.  You should see a list of users (or session IDs) and their stored memories.
+6.  Look for the summary of your recent conversation (e.g., facts about Python
+    release dates).
+7.  If you see the data here, your `auto_save_session_to_memory_callback` is
+    working correctly!
+
 ### Implementation Hints
 
-1. Refer to the `demo/agent.py` for the exact syntax of the callback and
-   imports.
-2. Don't forget to import `preload_memory_tool` and add it to the `tools` list.
-3. Your prompt in `agent-prompt.txt` is crucial. It should tell the agent that
-   it is a research assistant and that it should remember past research.
-4. For `search-prompt.txt`, a simple instruction like "You are a helpful
-   assistant that searches the web" is sufficient.
-
----
-
-## Important Details
-
-### Common Misconceptions
-
-**Misconception**: "I need to manually save every search result to a database."
-**Reality**: "The Agent Engine Memory Bank automatically summarizes the
-conversation, which includes the results provided by the search tool. You just
-need to save the session."
-
-### Best Practices
-
-1. **Separation of Concerns**: We use a separate `search_agent` to handle the
-   complexity of searching, while the `root_agent` manages the overall
-   conversation and memory.
-2. **Prompt Engineering**: Explicitly telling the agent to "remember" or "
-   recall" helps the LLM trigger the right behavior when context is injected.
+1.  **Callback Syntax**: The callback must be `async` and take a
+    `CallbackContext`. You access the memory service via
+    `callback_context._invocation_context.memory_service`.
+2.  **Tool Imports**: You need `preload_memory_tool` from
+    `google.adk.tools.preload_memory_tool` and `search_agent_tool` from the
+    local `.search_agent` module.
+3.  **Prompting**: In `agent-prompt.txt`, explicitly tell the agent it is a
+    research assistant and that it *must* remember past conversations to help the
+    user effectively.
