@@ -31,12 +31,12 @@ Information Summarizer
   - navigate to the displayed URL in your browser.
 - demonstration
   - In the `adk web` chat interface, provide various customer feedback examples:
-    - "I am writing to express my extreme dissatisfaction with the recent service
-      I received on October 26, 2023. The technician was late, unhelpful, and did
-      not resolve my issue. My name is Alice Smith."
-    - "Just wanted to say that the new interface is fantastic! Great work team."
+    - "I really don't like your new product line."
     - "I think it would be great if you could add a dark mode option to your
       mobile app. It would really help with eye strain at night."
+    - "Hi, I'm Jennifer Martinez. On December 5th, 2024, I received my order,
+      and I absolutely love the quality! The packaging was beautiful, and
+      the delivery was fast. Thank you!"
   - Observe how the agent consistently outputs structured JSON conforming to the
     `FeedbackSummary` schema.
   - Show how optional fields are correctly omitted when not present in the input.
