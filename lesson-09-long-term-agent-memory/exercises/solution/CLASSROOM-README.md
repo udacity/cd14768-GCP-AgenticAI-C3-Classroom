@@ -22,9 +22,9 @@ Learning objectives:
 
 ### Prerequisites
 
-- Completion of the Module 9 Demo.
 - Understanding of ADK tools and agents.
-- A configured Agent Engine instance.
+- Understanding how to integrate Grounding with Google Search and other tools 
+  in the ADK.
 
 ---
 
@@ -210,6 +210,8 @@ To confirm that your agent is successfully saving memories:
 5.  You should see a list of users (or session IDs) and their stored memories.
 6.  Look for the summary of your recent conversation (e.g., facts about Python
     release dates).
+7.  Clicking on the "Edit" button (three dots) will allow you to see the exact
+    text that was saved and is available for recall.
 
 ---
 
