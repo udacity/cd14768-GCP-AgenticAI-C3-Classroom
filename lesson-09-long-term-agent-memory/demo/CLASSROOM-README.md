@@ -293,6 +293,37 @@ based on the context stored in the Memory Bank.
 
 ---
 
+## Comparison with Session/User State
+
+You should be familiar with how the ADK works with Session and User state 
+and how tools can explicitly get and set values from this state. It is 
+important to understand how they differ from using long-term memory in this way:
+
+- **Session State**: 
+  - Ephemeral data relevant only to the current conversation
+    (e.g., current travel itinerary). 
+  - Lost when the session ends or is reset. 
+  - Values are readable and writable in a tool and you can specify where the 
+    values are inserted in the prompt. 
+- **User State**: 
+  - Key-value pairs linked to a user (e.g., "favorite_color":
+    "blue").
+  - Lasts longer than a session
+  - Good for structured preferences but limited in complexity. 
+  - Values are readable and writable in a tool and you can specify where the
+    values are inserted in the prompt.
+- **Agent Engine Memory Bank (Long-Term Memory)**: 
+  - Designed for unstructured,
+    semantic memories (e.g., "The user mentioned they like hiking in the fall").
+  - Uses AI to summarize and index conversations, allowing for "fuzzy" recall
+    of concepts over time, rather than just exact key matches.
+  - Lasts longer than a session
+  - Hooks save the conversation summary after each round of the conversation 
+    and a specialized tool adds the summary to the prompt before messages 
+    are sent to the LLM
+
+---
+
 ## Important Details
 
 ### Common Misconceptions
