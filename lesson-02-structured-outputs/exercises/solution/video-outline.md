@@ -6,6 +6,12 @@ Information Summarizer
   - Useful for leveraging structured outputs
     for reliable data extraction and downstream processing, particularly for
     tasks like sentiment analysis or database ingestion.
+- [agent.py] Configure the ADK Agent with Output Schema (`root_agent = Agent(...)`,
+  specifically `output_schema=FeedbackSummary`)
+  - Explain that this configuration explicitly instructs the Gemini model to
+    adhere to the `FeedbackSummary` Pydantic schema for all its outputs.
+  - This establishes the critical link between the desired output structure and
+    the LLM's generation capabilities within ADK.
 - [agent.py] Define Feedback Summary Pydantic Model (`FeedbackType`, `FeedbackSummary`)
   - Highlight the use of `typing.Literal` to constrain `feedback_type` values.
   - Emphasize `Optional` fields (`customer_name`, `feedback_date`) and the
@@ -19,12 +25,6 @@ Information Summarizer
     information (customer name, feedback date, feedback type, summary).
   - Highlight the instruction to omit optional fields if their values are not
     found, ensuring concise output.
-- [agent.py] Configure the ADK Agent with Output Schema (`root_agent = Agent(...)`,
-  specifically `output_schema=FeedbackSummary`)
-  - Explain that this configuration explicitly instructs the Gemini model to
-    adhere to the `FeedbackSummary` Pydantic schema for all its outputs.
-  - This establishes the critical link between the desired output structure and
-    the LLM's generation capabilities within ADK.
 - running the code
   - start `adk web` in another window from the parent directory of the agent
     (i.e., `cd lesson-02-structured-outputs` then `adk web`)
