@@ -17,13 +17,12 @@ Learning objectives:
 
 - Configure OpenTelemetry environment variables for ADK.
 - Run the agent with telemetry enabled using `adk web --otel_to_cloud`.
-- Visualize and analyze agent traces in the Google Cloud Trace Explorer.
+- Visualize and analyze agent activity in the Google Cloud Log Explorer.
 
 ### Prerequisites
 
 - A Google Cloud Project.
-- The **Telemetry API** must be enabled in your
-  project. [Enable it here](https://console.developers.google.com/apis/api/telemetry.googleapis.com/overview).
+- The **Telemetry API** must be enabled in your project. [Enable it here](https://console.developers.google.com/apis/api/telemetry.googleapis.com/overview).
 - Basic understanding of running ADK agents.
 
 ---
@@ -79,20 +78,24 @@ GOOGLE_CLOUD_PROJECT=<your project ID>
 GOOGLE_CLOUD_LOCATION=us-central1
 
 # OpenTelemetry Configuration
-OTEL_SERVICE_NAME=adk-weather
+OTEL_SERVICE_NAME=<name you assign>
 OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
 ```
 
 **Key Configuration Details:**
 
-- `OTEL_SERVICE_NAME`: Identifies your service in the traces (e.g., "
-  adk-weather").
+- `OTEL_SERVICE_NAME`: Identifies your service in the traces.
 - `OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED`: Automatically captures
   standard Python logs.
 - `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT`: **Crucial.** This
   captures the actual text content of prompts and responses, allowing you to see
   exactly what the user said and what the model replied.
+
+**IMPORTANT**:
+You should carefully consider if you want to capture all messages. Some 
+agents may be handling sensitive information that requires special handling, 
+and you may not be allowed to save it. 
 
 ### Step 2: The Agent Code
 
@@ -136,18 +139,9 @@ Project.
 Once you have chatted with the agent (e.g., "What's the weather in Tokyo?"), you
 can view the traces in the Cloud Console.
 
-1. Visit the *
-   *[Google Cloud Trace Explorer](https://console.cloud.google.com/traces/list)
-   **.
+1. Visit the **[Google Cloud Logs Explorer](https://console.cloud.google.com/logs/query)**.
 2. Select your project if not already selected.
-3. You will see a list of recent traces. Click on one to view the details.
-4. **Analyze the Trace**:
-    - **Waterfall View**: See the sequence of events (User Input -> Model
-      Call -> Tool Call -> Model Call -> Response).
-    - **Latency**: Check how long each step took.
-    - **Attributes**: Click on a span (like a model generation step) to see
-      detailed attributes, including the prompts and responses (thanks to
-      `CAPTURE_MESSAGE_CONTENT=true`).
+3. You will see a list of log events. Click on one to view the details.
 
 ---
 
@@ -165,9 +159,9 @@ can view the traces in the Cloud Console.
 
 ### Common Errors
 
-**Error**: "I don't see any traces in the console."
+**Error**: "I don't see any logs in the console."
 
 - **Cause 1**: The Telemetry API is not enabled in your Google Cloud Project.
 - **Cause 2**: You ran `adk web` without the `--otel_to_cloud` flag.
-- **Cause 3**: There is a delay (usually 1-2 minutes) before traces appear in
+- **Cause 3**: There is a delay (usually 1-2 minutes) before logs appear in
   the UI. Wait a moment and refresh.
