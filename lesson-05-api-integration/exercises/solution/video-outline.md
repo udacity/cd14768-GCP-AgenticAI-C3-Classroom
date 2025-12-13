@@ -29,6 +29,11 @@ Using a Currency Exchange API
     - Show the command `gcloud auth application-default login`.
     - Explain that this command downloads a key file that the Google Cloud
       libraries use automatically to verify your identity.
+- [agent.py] Review Agent Configuration
+    - Confirm the `convert_currency` tool is registered.
+- [agent-prompt.txt] Review instructions
+  - Format for data, both to tool and to customer
+  - What tool is available
 - [tools.py] Review `get_api_key`
     - Highlight the use of `secretmanager.SecretManagerServiceClient`.
     - Explain that this client uses **ADC** (Application Default Credentials)
@@ -40,8 +45,6 @@ Using a Currency Exchange API
       documentation's "Pair Conversion" endpoint.
     - Review the `requests.get()` call and robust JSON parsing with
       `response.raise_for_status()`.
-- [agent.py] Review Agent Configuration
-    - Confirm the `convert_currency` tool is registered.
 - running the code
     - start `adk web` in another window (`cd lesson-05-api-integration` then
       `adk web`)
