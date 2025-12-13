@@ -11,12 +11,15 @@ class Distance(BaseModel):
     num: float = Field(..., description="The numerical value of the distance.")
     units: DistanceUnitsType = Field(..., description="The units of measurement for the distance.")
 
-class RobotCommands(BaseModel):
+class RobotCommand(BaseModel):
     command: CommandType = Field(..., description="The command for the robot.")
     direction: Optional[DirectionType] = Field(None, description="The direction for the robot.")
     distance: Optional[Distance] = Field(None, description="The distance for the robot to move.")
     object: Optional[str] = Field(None, description="The object the robot should interact with.")
     error: Optional[str] = Field(None, description="If the instruction was invalid or ambiguous, explain the problem.")
+
+class RobotCommands(BaseModel):
+    commands: list[RobotCommand] = Field(..., description="A list of robot commands.")
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
@@ -27,7 +30,7 @@ model = "gemini-2.5-flash"
 
 root_agent = Agent(
     name="robot_commands",
-    description="A tool for identifying instructions for a hypothetical robot.",
+    description="Warehouse robot controller - converts worker instructions to structured commands.",
     instruction=instruction,
     model=model,
     output_schema=RobotCommands,   # See what happens if we remove this line
