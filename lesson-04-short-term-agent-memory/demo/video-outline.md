@@ -8,9 +8,14 @@ Implementing Short-Term Agent Memory with ADK
   - This is necessary because, while the ADK may transmit some state during 
     the conversation with the LLM, some things are not well represented 
     in the conversation exchange.
-  - Discuss request state, session state, and user state
+    - LLMs are bad at counting
+    - LLMs can hallucinate an attribute's value if the conversation shows 
+      this value changing many times
+  - Managing state values in tools, and reporting it as part of the 
+    instructions to the LLM, address these issues.
   - State can be stored outside the ADK runtime, but we're using memory.
 - [tools.py] Explain User vs. Session Scope
+    - Discuss different state types: request, session, and user
     - Review `set_iterations`:
         - Shows how to store `num_iterations` in `user:num_iterations`.
         - Explain that the `user:` prefix means "this state persists for this
@@ -62,5 +67,11 @@ Implementing Short-Term Agent Memory with ADK
     - `user:` state enables powerful personalization and persistent preferences.
     - Session state allows for clean, task-specific tracking that resets with
       each new interaction flow.
+    - Having tools manage the state is particularly useful in cases where
+        - We need to keep track of numbers
+        - Attribute values will change many times during the conversation
+        - Conversation state proves unreliable or the LLM hallucinates results
+          from conversation state
+        - We need user-specific values retained between conversations
     - Combining these scopes allows for sophisticated and context-aware agent
       behaviors.

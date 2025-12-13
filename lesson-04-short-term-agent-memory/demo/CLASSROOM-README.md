@@ -92,6 +92,9 @@ remembers" information.
 
 ### Key Terms
 
+**State**: Information that is available to an agent and an LLM that is 
+useful in processing the overall customer request.
+
 **Session-Scoped State**: Data that persists for the duration of a single
 interactive session. In ADK, keys without a prefix (e.g., `current_iteration`)
 default to this scope. It is useful for tracking the context of the current
@@ -141,8 +144,9 @@ def set_iterations(num_iterations: int, tool_context: ToolContext):
   return f"I'll remember that you want me to ask you {num_iterations} questions."
 ```
 
-**Key Point**: The `user:` prefix ensures that if the user restarts the chat,
-the agent will still know `num_iterations` and `num_iterations_instructions`.
+**Key Point**: The `user:` prefix ensures that if the customer starts a new 
+chat, the agent will still know `num_iterations` and 
+`num_iterations_instructions`.
 
 ### Step 2: Running the Task (`tools.py`)
 
@@ -199,6 +203,13 @@ their preference in every new session.
 **Reality**: Mixing up scopes is a common bug. Storing a preference in session
 scope means the user has to repeat it every time. Storing task progress in user
 scope means the user can never restart the task from the beginning.
+
+**Misconception**: "The conversation is good enough to keep track of values."
+**Reality**: While conversational state (the values in the message history
+with the LLM) *can* keep track of this information, LLMs may get confused
+when trying to keep count of how often an event occurred, or when an
+attribute changes values during the conversation. Having the agent inject
+specific values from the state into the instructions addresses this issue.
 
 **Misconception**: "I need a database for user state."
 **Reality**: ADK abstracts the storage. While you *can* back it with a
