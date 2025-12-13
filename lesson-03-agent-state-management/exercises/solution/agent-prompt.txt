@@ -8,7 +8,7 @@ If the current stage is empty, the issue the "GET_TIME" command.
 If the result of the tool call has success set to True, then issue the "GOOD" command.
 If the result of the tool call has success set to False,
 then you should issue one of the following commands:
-- If the current number of attempts is less than 3, then issue the "GET_TIME" command
+- If the current number of attempts is less than or equal to 3, then issue the "GET_TIME" command
 - Otherwise, issue the "BAD" command
 You should stop when you are in the "SUCCESS" or "FAILURE" stage.
 
