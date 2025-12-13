@@ -1,17 +1,14 @@
 # cd14768 - Lesson 5 - exercise
 Using a Currency Exchange API
 
-- In this solution walkthrough, we'll examine an agent that calls an 
-  API to do currency conversions. This API, however, uses an API Key, 
-  and we need to securely store and retrieve this key from the Google 
+- In this exercise you were asked to create an agent that calls an 
+  API to do currency conversions. You needed to create an API Key with a 
+  service that would provide this information and then write a tool that 
+  would access this API 
+- The API Key needed to be securely stored, preferably using the Google 
   Cloud Secret Manager.
-  - Security is something of a chicken-and-egg problem. We want to secure
-    the credentials for a service (the API Keys for the Places and Routes
-    API), but the best way to do this is to store them in the Secret Manager,
-    which also requires credentials to access.
-  - How do we securely store the credentials for the Secret Manager?
-  - Google Cloud Application Default Credentials (ADC) is the solution to
-    this.
+  - Since the Secret Manager also needs credentials to access, we used the 
+    Google Cloud Application Default Credentials (ADC) to do so.
     - A secure way from our local machine to authenticate ourselves to the
       service.
     - On Google Cloud resources (Cloud Run or Agent Engine), there is a
