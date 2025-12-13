@@ -125,12 +125,14 @@ extract robot commands and their parameters.
 
 In `agent.py`, we define several Pydantic models and Literal types to create a
 strict schema for the robot commands. `DirectionType`, `DistanceUnitsType`, and
-`CommandType` use `typing.Literal` to restrict values to a predefined set. The
-`Distance` model combines a `float` number and its `units`. The core
-`RobotCommands` `BaseModel` encapsulates all possible robot actions, including
-`command`, `direction`, `distance`, `object`, and an `error` field for handling
-invalid instructions. Each field includes a `Field` with a `description`, which
-is crucial for guiding the LLM.
+`CommandType` use `typing.Literal` to restrict values to a predefined set.
+
+We define a `RobotCommand` model that represents a single action, including
+attributes like `command`, `direction`, `distance`, `object`, and `error`. 
+
+Crucially, we then define a `RobotCommands` model that contains a list of these
+commands. This allows the agent to return multiple instructions in a single
+response.
 
 ```python
 import os
@@ -149,7 +151,7 @@ class Distance(BaseModel):
                                    description="The units of measurement for the distance.")
 
 
-class RobotCommands(BaseModel):
+class RobotCommand(BaseModel):
   command: CommandType = Field(..., description="The command for the robot.")
   direction: Optional[DirectionType] = Field(None,
                                              description="The direction for the robot.")
@@ -159,34 +161,38 @@ class RobotCommands(BaseModel):
                                 description="The object the robot should interact with.")
   error: Optional[str] = Field(None,
                                description="If the instruction was invalid or ambiguous, explain the problem.")
+
+
+class RobotCommands(BaseModel):
+  commands: list[RobotCommand] = Field(..., description="A list of robot commands.")
 ```
 
 **Key points:**
 
 - **Strict Type Enforcement**: `Pydantic` models ensure the output adheres to
   defined types and structures.
+- **List Support**: The `RobotCommands` model allows for a list of `RobotCommand`
+  objects, enabling the agent to handle multi-step instructions.
 - **`Literal` Types**: Used to restrict string values to a predefined set,
   improving data quality.
 - **Descriptive Fields**: `Field` descriptions provide essential context to the
   LLM for accurate parsing.
-- **Error Reporting**: The `error` field within the schema allows the LLM to
-  communicate parsing issues in a structured way.
+- **Error Handling**: It is important we define a way for it to report an error in the existing
+  structure, otherwise it may hallucinate a response to fit into the reply if
+  there is actually a problem.
 
 ### Step 2: Define Agent Instructions for Structured Output
 
 The `agent-prompt.txt` file provides comprehensive instructions to the Gemini
-model on how to act as a robot assistant and, critically, how to convert plain
-text commands into the defined `RobotCommands` structured format. It details
-each command the robot can perform, their required and optional attributes, and
-specific guidelines for handling ambiguity or invalid inputs by reporting errors
-or asking for clarification. This detailed prompting is vital for guiding the
-LLM to produce accurate structured output.
+model. It details each command the robot can perform and specific guidelines for
+handling ambiguity. Note the instruction: "You can return one or more commands
+in the response."
 
 ```text
-You are a helpful robot assistant.
-Your job is to take plain text commands and convert them into a structured format so that the robot can understand them.
+You are a warehouse robot controller. Workers give you natural language instructions which you convert to structured
+commands for the robot's control system.
 
-The robot can perform the following commands:
+You can perform the following commands:
 *   **turn**: Change the robot's orientation. Must be combined with a `direction` (left/right)
 *   **walk**: Move the robot. Can be combined with an optional `direction` (left/right) and a `distance` (e.g., 5 feet,
     10 yards) or an `object` to move towards
@@ -203,7 +209,12 @@ For each command, identify the primary action and any relevant optional attribut
 
 If an attribute in the returned object would be null, you should omit it.
 
+You can return one or more commands in the response.
+
 Additional guidelines:
+*   The first message you get, if it is not a command that you can execute, reply with the following message:
+     "Hello. I'm the warehouse robot controller. Try commands like 'turn left', 'walk 10 feet', and I'll convert them
+     to structured format."
 *   If you are not sure what command was issued, report this as an error and ask for clarification
 *   If the command has invalid values, report this as an error and ask for clarification
 *   If the destination for "walk" is ambiguous (eg - "go somewhere" or "go over there") ask for clarification
@@ -214,25 +225,19 @@ Additional guidelines:
 **Key points:**
 
 - **Clear Role Definition**: The prompt establishes the agent's role as a
-  translator from natural language to structured commands.
+  translator.
 - **Detailed Command Descriptions**: Each robot command and its parameters are
-  clearly outlined, guiding the LLM on how to map natural language to the
-  schema.
-- **Error Handling Instructions**: Specific directives for reporting errors or
-  ambiguities ensure robust and helpful responses for invalid inputs.
-- **Omission of Nulls**: Instructing the LLM to omit null attributes helps keep
-  the output concise and relevant.
+  clearly outlined.
+- **Multi-Command Support**: Explicitly telling the model it can return one or
+  more commands.
+- **Error Handling**: Specific directives for reporting errors or ambiguities.
 
 ### Step 3: Create the ADK Agent with Output Schema
 
 In `agent.py`, the `root_agent` is instantiated using the ADK's `Agent` class.
-The critical part here is setting the `output_schema` parameter to our
-`RobotCommands` Pydantic model. This configuration explicitly tells the Gemini
-model to format its output according to the `RobotCommands` schema. The
-`instruction` is loaded from `agent-prompt.txt`, and the agent is given a `name`
-and `description`. Unlike the previous module, this agent does not explicitly
-use `tools` in the same way, but rather leverages the `output_schema` to guide
-its direct generation of structured JSON.
+The `output_schema` parameter is set to our `RobotCommands` Pydantic model.
+This tells Gemini that the final output must be an object containing a list of
+commands.
 
 ```python
 import os
@@ -251,7 +256,7 @@ model = "gemini-2.5-flash"
 
 root_agent = Agent(
   name="robot_commands",
-  description="A tool for identifying instructions for a hypothetical robot.",
+  description="Warehouse robot controller - converts worker instructions to structured commands.",
   instruction=instruction,
   model=model,
   output_schema=RobotCommands,  # See what happens if we remove this line
@@ -260,22 +265,13 @@ root_agent = Agent(
 
 **Key points:**
 
-- **`output_schema` Parameter**: This is the core mechanism for enforcing
-  structured output. The ADK passes this schema to Gemini, ensuring strict
-  adherence.
-- **Centralized Agent Configuration**: All components – the LLM, the
-  instructions, and the desired output structure – are brought together in the
-  `Agent` instantiation.
-- **Direct Structured Generation**: The agent directly generates JSON conforming
-  to `RobotCommands` rather than calling external Python tools defined as
-  functions.
+- **`output_schema` Parameter**: Enforces the `RobotCommands` structure.
+- **Centralized Configuration**: Connects the model, instructions, and schema.
 
 ### Complete Example
 
 Here is the full `agent.py` file, demonstrating a complete ADK agent configured
-to produce structured output based on natural language robot commands. This
-setup ensures that regardless of the phrasing of the input, the output will
-always be a valid `RobotCommands` JSON object, ready for machine interpretation.
+to produce structured output representing a list of robot commands.
 
 ```python
 import os
@@ -294,7 +290,7 @@ class Distance(BaseModel):
                                    description="The units of measurement for the distance.")
 
 
-class RobotCommands(BaseModel):
+class RobotCommand(BaseModel):
   command: CommandType = Field(..., description="The command for the robot.")
   direction: Optional[DirectionType] = Field(None,
                                              description="The direction for the robot.")
@@ -306,6 +302,10 @@ class RobotCommands(BaseModel):
                                description="If the instruction was invalid or ambiguous, explain the problem.")
 
 
+class RobotCommands(BaseModel):
+  commands: list[RobotCommand] = Field(..., description="A list of robot commands.")
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
 with open(instruction_file_path, "r") as f:
@@ -315,7 +315,7 @@ model = "gemini-2.5-flash"
 
 root_agent = Agent(
   name="robot_commands",
-  description="A tool for identifying instructions for a hypothetical robot.",
+  description="Warehouse robot controller - converts worker instructions to structured commands.",
   instruction=instruction,
   model=model,
   output_schema=RobotCommands,  # See what happens if we remove this line
@@ -325,56 +325,65 @@ root_agent = Agent(
 **How it works:**
 
 1. The agent receives a natural language instruction (e.g., "walk 10 feet to the
-   left").
-2. Gemini, guided by the `agent-prompt.txt` and strictly adhering to the
-   `RobotCommands` `output_schema`, parses the instruction.
-3. It extracts the command, direction, and distance, and formats them into a
-   JSON object conforming to the schema.
-4. The ADK receives this structured JSON, which can then be directly used by a
-   robot control system or other downstream applications.
+   left then turn right").
+2. Gemini parses the instruction and creates a list of `RobotCommand` objects.
+3. These are wrapped in a `RobotCommands` object.
+4. The ADK receives this structured JSON.
 
 **Expected output:**
 
 ```json
 Human: "walk 10 feet to the left"
 Agent: {
-"command": "walk",
-"direction": "left",
-"distance": {
-"num": 10.0,
-"units": "feet"
-}
-}
-```
-
-```json
-Human: "dance"
-Agent: {
-"command": "dance"
+  "commands": [
+    {
+      "command": "walk",
+      "direction": "left",
+      "distance": {
+        "num": 10.0,
+        "units": "feet"
+      }
+    }
+  ]
 }
 ```
 
 ```json
-Human: "turn right"
+Human: "dance then turn right"
 Agent: {
-"command": "turn",
-"direction": "right"
+  "commands": [
+    {
+      "command": "dance"
+    },
+    {
+      "command": "turn",
+      "direction": "right"
+    }
+  ]
 }
 ```
 
 ```json
 Human: "get the red ball"
 Agent: {
-"command": "get",
-"object": "red ball"
+  "commands": [
+    {
+      "command": "get",
+      "object": "red ball"
+    }
+  ]
 }
 ```
 
 ```json
 Human: "go somewhere"
 Agent: {
-"command": "error",
-"error": "The destination for \"walk\" is ambiguous. Please specify where to go."
+  "commands": [
+    {
+      "command": "error",
+      "error": "The destination for \"walk\" is ambiguous. Please specify where to go."
+    }
+  ]
 }
 ```
 
