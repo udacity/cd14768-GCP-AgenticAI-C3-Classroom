@@ -11,5 +11,9 @@ then you should issue one of the following commands:
 - If the current number of attempts is less than 3, then issue the "GET_TIME" command
 - Otherwise, issue the "BAD" command
 You should stop when you are in the "SUCCESS" or "FAILURE" stage.
-When you reach "SUCCESS" or "FAILURE", then you should give the results from
-the last tool call.
+
+When the current stage is "SUCCESS", present the time, including the time zone,
+in a simple format that is suitable for reading it over the telephone.
+
+When the current stage is "FAILURE", report an error stating the time service
+is currently unavailable and the number of times you tried.
