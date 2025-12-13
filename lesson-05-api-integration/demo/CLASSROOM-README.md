@@ -109,6 +109,19 @@ You need to explicitly enable the services we are going to use.
 3. Search for and enable **Google Routes API**.
 4. Search for and enable **Secret Manager API**.
 
+You can also do this through the command line:
+
+ ```bash                                                                              
+ # Enable Places API (for location search)                                            
+ gcloud services enable places.googleapis.com                                         
+                                                                                      
+ # Enable Routes API (for distance/duration calculations)                             
+ gcloud services enable routes.googleapis.com                                         
+                                                                                      
+ You can verify they're enabled:                                                      
+ gcloud services list --enabled | grep -E "places|routes"
+```
+
 ### 2. Create an API Key
 
 1. Go to **APIs & Services > Credentials** in the Google Cloud Console.

@@ -16,13 +16,14 @@ Implementing API Integration for Agents
     - On Google Cloud resources (Cloud Run or Agent Engine), there is a 
       service account that we can permit to access the Secret Manager.
 - [Setup Walkthrough] Google Cloud Console
-    - **Enable APIs**: Explicitly walk through enabling "Google Places API
-      (New)", "Google Routes API", and "Secret Manager API" in the API Library.
-      Emphasize finding the "New" version of Places.
-    - **Credentials**: Show where the API Key is created (APIs & Services >
-      Credentials).
-    - **Secret Manager**:
-        - Navigate to Secret Manager.
+    - **Enable APIs**: APIs and Services -> Enable APIs and services
+        - places api (new)
+        - routes api
+        - secret manager api
+    - **Credentials**: APIs & Services -> Credentials
+      - Create credentials
+      - API Key
+    - **Secret Manager**: search for Secret Manager
         - Show the creation of the `places-api-key` secret.
         - Explain: "We pasted our API key here so we don't have to put it in our
           code."
