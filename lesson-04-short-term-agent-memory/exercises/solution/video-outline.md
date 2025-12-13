@@ -2,7 +2,7 @@
 
 Using Session state for trip planning
 
-- In this solution walkthrough, we'll examine a multi-step travel agent that
+- In this exercise, you were asked to build a multi-step travel agent that
   leverages both user-scoped and session-scoped state to provide personalized,
   context-aware planning.
 - [tools.py] Review `set_home_location` (User Scope)

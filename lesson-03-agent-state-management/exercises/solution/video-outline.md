@@ -1,7 +1,7 @@
 # cd14768 - Lesson 3 - exercise
 Implement Agent State
 
-- We'll examine an ADK agent that implements a
+- In this exercise, you were asked to create an ADK agent that implements a
   state machine to manage tool call retries, creating a robust, fault-tolerant system.
   We'll see how request-scoped state (`temp:`) tracks retry counts and process stages.
 - [agent.py] Review Agent Configuration

@@ -4,6 +4,9 @@ Implementing Structured Outputs with Vertex AI Gemini and Pydantic
 - This demo illustrates how to take fuzzy, human-like plain text input and 
   convert it into a structured, machine-readable output using Vertex AI 
   Gemini's capabilities and Pydantic models.
+- We'll do this by writing an agent that controls a simple warehouse robot
+  - We can issue commands in a human language
+  - The agent turns it into a well-defined data structure
 - Agents can use structured outputs as a contextual parser
   - This creates a bridge between human-text and traditional computing methods
   - Results are deterministic, which is what existing systems expect

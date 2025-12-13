@@ -5,6 +5,13 @@ Implementing Short-Term Agent Memory with ADK
 - Explore how ADK manages state with different scopes (`user:` vs. session),
   enabling agents to remember user preferences across sessions while managing
   task progress within a session.
+- We'll do this using an agent that asks us questions and later summarizes 
+  our answers. This might be the basis for a brainstorming agent, for example.
+  - At the beginning, we want it to prompt us how many questions will be 
+    asked in each session, and it should remember this for future sessions.
+  - During the conversation, it needs to keep track of how many questions 
+    have been asked to know which question to ask next and when to end.
+- Why do we need this?
   - This is necessary because, while the ADK may transmit some state during 
     the conversation with the LLM, some things are not well represented 
     in the conversation exchange.

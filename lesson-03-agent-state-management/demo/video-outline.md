@@ -4,6 +4,9 @@ Implementing Agent State Management with ADK
 
 - Explore state machines and how the ADK can manage state in a single request,
   focusing on "temp:" (request-scoped) state.
+- We will explore this by building an agent that takes as its input some 
+  colors to mix and uses a state machine to determine what the resulting 
+  color would be.
 - Why do we need state? Isn't this just part of the conversation history?
     - **Precision & Reliability**: 
       - LLMs are not good at counting.
