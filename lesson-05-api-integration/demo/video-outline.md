@@ -32,6 +32,8 @@ Implementing API Integration for Agents
         - Show the creation of the `places-api-key` secret.
         - Explain: "We pasted our API key here so we don't have to put it in our
           code."
+        - We could put it in our `.env` file, but we need to be careful this 
+          is not checked into version control
 - [Setup Walkthrough] Local Authentication (ADC)
     - Explain Application Default Credentials (ADC).
     - Show the command `gcloud auth application-default login`.
