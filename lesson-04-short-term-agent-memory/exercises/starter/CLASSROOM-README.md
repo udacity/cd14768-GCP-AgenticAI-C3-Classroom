@@ -151,7 +151,7 @@ Remember that you should **never** check-in your .env file to git.
 import os
 from google.adk.agents import Agent
 
-# TODO: Import add_airport and create_itinerary from .tools
+# TODO: Import add_city and create_itinerary from .tools
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")

@@ -6,6 +6,7 @@ def set_home_location(location: str, tool_context: ToolContext):
     Only do this if they explicitly tell you to.
     """
     # TODO: Store the location in the user-scoped state
+    # TODO: Also set a dynamic instruction for the prompt
 
     return f"Home location set to {location}."
 
