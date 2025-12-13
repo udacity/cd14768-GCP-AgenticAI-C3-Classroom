@@ -36,9 +36,18 @@ Learning objectives:
 
 LLMs are inherently stateless; they don't "remember" variables or data between
 function calls or processing steps unless that information is passed back into
-the context window. When an agent needs to perform a multi-step logic process (
-like a state machine) to answer a single user request, it needs a way to store
-the "current state" and update it as it executes tools.
+the context window. The core task of agents is to manage this conversation 
+state, passing the history of the conversation to the LLM as part of each 
+request.
+
+However, when an agent needs to perform a multi-step logic process (like a 
+state machine) to answer a single user request, this conversation may not be 
+enough. LLMs often have problems with counting, for example. State machines 
+are also difficult, since the conversation will show the "current" state of 
+a value at different points in the conversation which can cause 
+hallucinations. Because of these issues, the agent needs a concrete way to 
+store and manage some values as it executes tools and report this in a 
+consistent way to the LLM. 
 
 ### The Solution
 
@@ -47,13 +56,15 @@ retrieve data. By using the `temp:` prefix for state variables (e.g.,
 `temp:stage`), we define data that persists only for the duration of the current
 customer request. This allows the agent to loop through tool calls, updating its
 internal state (like the current color mix), until it reaches a final result,
-without polluting the long-term session memory.
+without polluting the longer-term session memory or confusing the LLM with 
+changing values in the conversational state.
 
 ### How It Works
 
 1. **State Machine**: A theoretical model where a system exists in one "state"
    at a time and transitions to another state based on inputs. Here, the states
-   are colors (BLACK, RED, GREEN, etc.), and inputs are commands like `ADD_RED`.
+   are colors (BLACK, RED, GREEN, etc.), and inputs are commands like 
+   `ADD_RED`.
 2. **Tool Context**: When the LLM calls a tool, the ADK injects a `ToolContext`
    object. This gives the tool access to the agent's current state.
 3. **Reading/Writing State**: The tool reads the current `temp:stage` (
@@ -72,7 +83,9 @@ without polluting the long-term session memory.
 **State Machine**: A mathematical model of computation. It is an abstract
 machine that can be in exactly one of a finite number of states at any given
 time. The state machine can change from one state to another in response to some
-inputs; the change from one state to another is called a transition.
+inputs; the change from one state to another is called a transition.  While 
+state machines seem somewhat abstract, they are very important tools to make 
+sure business processes proceed along a well-defined path.
 
 **`temp:` State**: In ADK, state keys starting with `temp:` are
 "request-scoped." They are created when a user request begins and are cleared
@@ -214,6 +227,14 @@ the state changes because:
 2. Crucially, we injected the `temp:stage` variable back into the prompt for the
    *next* inference step. Without `{temp:stage?}` in the prompt, the LLM might
    get lost or repeat actions.
+
+**Misconception**: "The conversation state is good enough to keep track of 
+values."
+**Reality**: While conversational state (the values in the message history 
+with the LLM) *can* keep track of this information, LLMs may get confused 
+when trying to keep count of how often an event occurred, or when an 
+attribute changes values during the conversation. Having the agent inject 
+specific values from the state into the instructions addresses this issue.
 
 **Misconception**: "`temp:` state lasts forever."
 **Reality**: `temp:` state is wiped clean after the final response to the user.

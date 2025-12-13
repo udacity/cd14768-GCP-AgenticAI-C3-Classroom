@@ -110,7 +110,8 @@ you need to:
     * Retry `GET_TIME` up to 3 times if it fails.
     * Issue a `GOOD` command if `get_time` succeeds.
     * Issue a `BAD` command if `get_time` fails after 3 attempts.
-    * Output the `get_time` result when in `SUCCESS` or `FAILURE` stage.
+    * Give friendly output based on the `get_time` result when it reaches the 
+      `SUCCESS` or `FAILURE` stage.
 4. **Configure Agent**: Ensure `agent.py` correctly imports `change_stage` and
    registers it in the `root_agent`'s `tools` list.
 
@@ -257,7 +258,8 @@ adk web
 
 ```text
 Human: "Get me the current time."
-Agent: The current time is 2023-10-27T10:30:00.000000+00:00. (after 1-3 retries)
+Agent: The current time is 10:30 AM Coordinated Universal Time. (after 1-3 
+retries)
 ```
 
 ```text
@@ -274,6 +276,8 @@ Agent: Failed to get the time after 3 attempts. (if all retries fail)
    appropriate.
 3. Pay close attention to how the LLM decides to transition states based on the
    success or failure of `get_time()` and the `temp:retry_count`.
+4. If you want to test failure, try adjusting the evaluation criteria in 
+   `get_time()`
 
 ---
 

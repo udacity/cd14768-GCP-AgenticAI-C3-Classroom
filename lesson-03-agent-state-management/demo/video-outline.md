@@ -4,6 +4,22 @@ Implementing Agent State Management with ADK
 
 - Explore state machines and how the ADK can manage state in a single request,
   focusing on "temp:" (request-scoped) state.
+- Why do we need state? Isn't this just part of the conversation history?
+    - **Precision & Reliability**: 
+      - LLMs are not good at counting.
+      - Asking an LLM to "remember the count" from 10 turns ago is unreliable.
+      - State variables (`temp:counter`) are precise and deterministic.
+    - **Single Source of Truth**: 
+      - The history contains *all* past states. 
+      - This can confuse the model. 
+      - Injecting the *current* state variable into the prompt gives the model
+        an unambiguous instruction.
+    - **Separation of Concerns**: 
+      - We don't pollute the permanent conversation history with temporary 
+        variables (like loop counters) that are only relevant during agent 
+        processing. 
+- [agent.py] Show the `root_agent` configuration that includes a tool that
+  will change what stage we are in.
 - [tools.py] Explain the State Machine Logic (`TRANSITIONS`)
     - Briefly define a State Machine: a system with defined states (colors) and
       transitions triggered by inputs (commands).
@@ -32,7 +48,7 @@ Implementing Agent State Management with ADK
           empty or default).
         - **Tool Call 1**: Click the event for
           `change_stage(command="ADD_RED")`.
-            - Show the HTTP request to show the prompt and how it changes 
+            - Show the HTTP request to show the prompt and how it changes
             - Show the tool output and the internal state update (if
               visible/logged).
         - **Intermediate Prompt**: Click the *next* request to the LLM.
@@ -48,3 +64,9 @@ Implementing Agent State Management with ADK
     - `ToolContext` gives tools read/write access to this state.
     - Dynamic prompts (`{key?}`) keep the LLM informed of state changes,
       enabling it to act as a reasoning engine for the state machine.
+    - This strategy is particularly useful in cases where
+      - We need to keep track of numbers
+      - Attribute values will change while the agent is determining a final 
+        result
+      - Conversation state proves unreliable or the LLM hallucinates results 
+        from conversation state

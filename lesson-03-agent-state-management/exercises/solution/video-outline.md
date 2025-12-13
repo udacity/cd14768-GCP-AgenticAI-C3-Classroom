@@ -4,6 +4,8 @@ Implement Agent State
 - We'll examine an ADK agent that implements a
   state machine to manage tool call retries, creating a robust, fault-tolerant system.
   We'll see how request-scoped state (`temp:`) tracks retry counts and process stages.
+- [agent.py] Review Agent Configuration
+  - Show the `change_stage` tool is imported and registered with the `Agent`.
 - [tools.py] Review the `TRANSITIONS` Dictionary
   - Notice the defined states: `START`, `GETTING_TIME`, `SUCCESS`, and `FAILURE`.
   - See how commands trigger specific transitions (e.g., `BAD` moves from `GETTING_TIME` to `FAILURE`).
@@ -14,10 +16,9 @@ Implement Agent State
   - This logic ensures the tool is the executor, while the agent is the decision maker.
 - [agent-prompt.txt] Review Agent Instructions
   - Highlight the dynamic state injection: `{temp:stage?}` and `{temp:retry_count?}`.
-  - Read the instructions that guide the agent: "If attempts < 3, issue GET_TIME".
+  - Read the instructions that guide the agent: "If attempts <= 3, issue 
+    GET_TIME".
   - This prompt effectively programs the agent to act as the state machine's logic engine.
-- [agent.py] Review Agent Configuration
-  - Confirm that the `change_stage` tool is imported and registered with the `Agent`.
 - running the code
   - start `adk web` in another window (`cd lesson-03-agent-state-management` then `adk web`)
   - navigate to the URL.

@@ -34,8 +34,8 @@ Learning objectives:
 ### The Problem
 
 We needed an agent that doesn't just give up when the `get_time` tool fails
-(which happens 50% of the time in this example). It needs to try again, but not 
-forever. This requires "memory" of the current attempt count and the current 
+(which happens 50% of the time in this example). It needs to try again, but not
+forever. This requires "memory" of the current attempt count and the current
 stage of the process within a single user request.
 
 ### The Solution
@@ -53,6 +53,12 @@ attempts. The `change_stage` tool manages the logic: updating these variables
 and calling `get_time` only when appropriate. The prompt acts as the "driver,"
 instructing the LLM on which command (`GET_TIME`, `GOOD`, `BAD`) to issue next
 based on the tool's output and the current state.
+
+Since LLMs are, themselves, stateless, using request-scoped state with
+`temp:` is useful because the state itself is relevant only to the current 
+request. We do not want to count how many times the tool is called during 
+the conversation - we want to track this just during this round of the 
+conversation.
 
 ---
 
