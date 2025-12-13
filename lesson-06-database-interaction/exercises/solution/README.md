@@ -9,9 +9,9 @@ GOOGLE_CLOUD_LOCATION=us-central1
 
 TOOLBOX_URL=http://127.0.0.1:5001
 
-MYSQL_HOST=35.226.245.218
-MYSQL_USER=toolbox
-MYSQL_PASSWORD=MCP-tools-1
+MYSQL_HOST=<your host ip address>
+MYSQL_USER=<mysql user>
+MYSQL_PASSWORD=<mysql password>
 
 
 Make sure you replace <your project ID> with the ID for your project.
