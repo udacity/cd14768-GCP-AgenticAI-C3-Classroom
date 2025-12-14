@@ -36,6 +36,8 @@ Implementing Database Interaction with MCP
 - [Setup Walkthrough] Cloud SQL & Toolbox
     - **Cloud SQL**: Show the instance in Google Cloud Console.
         - Mention creating a MySQL instance.
+          - This demo was setup for MySQL, but the MCP Database Toolbox 
+            can use many different kinds of databases.
         - Mention creating a restricted user (`toolbox`) for security.
         - Mention authorizing the local IP address.
     - **MCP Toolbox**:
@@ -70,7 +72,6 @@ Implementing Database Interaction with MCP
     - Navigate to the URL.
 - demonstration
     - Prompt: "What books did Jane Austen write?"
-    - **Walkthrough**:
         - Agent sends the question to the LLM, including what tools are 
           available.
         - LLM says to use the `books-by-author` tool with "Jane Austen" as 
@@ -82,6 +83,7 @@ Implementing Database Interaction with MCP
         - Agent forwards results to the LLM.
         - LLM replies, and Agent sends to the customer: "Jane Austen wrote 
           'Pride and Prejudice' (1813)..."
+    - Prompt: I'm looking for a book between 1945 and 1955
 - conclusion and summary
     - MCP enables safe, controlled database access.
     - No "Text-to-SQL" risks.
