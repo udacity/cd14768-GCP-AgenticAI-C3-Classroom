@@ -41,12 +41,12 @@ tools:
     source: warehouse
     description: Updates the stock quantity of a product.
     parameters:
-      - name: product_id
-        type: integer
-        description: The ID of the product to update.
       - name: new_stock_quantity
         type: integer
         description: The new stock quantity.
+      - name: product_id
+        type: integer
+        description: The ID of the product to update.
     statement:
       UPDATE products SET stock_quantity = ? WHERE product_id = ?;
 

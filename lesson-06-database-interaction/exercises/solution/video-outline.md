@@ -19,6 +19,8 @@ Warehouse Management Agent
     - **`get_product`**: Show the `SELECT` statement. Explain why this is
       needed (to find IDs).
     - **`update_product_stock`**: Show the `UPDATE` statement.
+      - Note that the order of parameters is important
+      - They are mapped to the ? in the SQL statement in order
     - **`log_audit`**: Show the `INSERT` into the audit table.
     - **Safety**: Reiterate that the agent cannot execute `DROP TABLE` or other
       arbitrary SQL because only these specific tools are defined.
@@ -47,5 +49,3 @@ Warehouse Management Agent
     - We've built a secure interface to a database.
     - We used the agent to enforce a business process (auditing) that isn't
       strictly enforced by the database itself.
-    - This pattern (Restricted Tools + Policy Prompt) is powerful for enterprise
-      agents.
