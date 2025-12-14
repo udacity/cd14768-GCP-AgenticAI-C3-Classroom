@@ -46,8 +46,9 @@ Implementing Single-Agent RAG with ADK and Vertex AI Search - Solution
     - Show the loop that extracts `result.chunk.content` to gather all relevant
       text chunks.
 - Running the code
-    - Start `adk web` in the `lesson-08-single-agent-rag/exercises/solution`
+    - Start `adk web` in the `lesson-08-single-agent-rag/exercises/`
       directory.
+    - Select **"solution"** from the dropdown in the ADK web interface
 - Demonstration
     - Open the ADK web interface in your browser.
     - Ask a question about one of your created superheroes, supervillains, or TV
