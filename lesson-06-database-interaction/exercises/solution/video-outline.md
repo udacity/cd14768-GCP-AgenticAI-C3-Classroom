@@ -2,10 +2,16 @@
 
 Warehouse Management Agent
 
-- In this solution walkthrough, we'll examine a database-backed agent that
-  performs secure inventory updates and enforces an audit trail.
+- For this exercise, you were asked to create a database-backed warehouse 
+  management agent.
+  - Warehouse employees could add new products and check and adjust the 
+    inventory counts.
+  - All activity needed to be logged to an audit log.
+- We're using the MCP Database Toolbox since it allows for easy, yet highly 
+  restricted, access to the database
 - [Setup Check] Database & Toolbox
-    - Verify that MySQL is running (`mysql` command).
+    - Make sure our database is running and that we have its IP address and 
+      the account information we need. 
     - Verify that the `toolbox` server is running with the solution's
       `tools.yaml`.
 - [tools.yaml] Review Tool Definitions

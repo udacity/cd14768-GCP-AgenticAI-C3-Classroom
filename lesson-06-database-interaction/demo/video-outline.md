@@ -2,8 +2,13 @@
 
 Implementing Database Interaction with MCP
 
-- In this demo, we'll explore how to securely access a Google Cloud SQL database
-  using the Model Context Protocol (MCP) and the Google MCP Database Toolkit.
+- In this demo, we'll be creating an agent that answers questions from a 
+  literary database that contains information about authors and their books. 
+  In particular, we will be able to get a list of books by an author, and 
+  get a list of books that were published between two years.
+- Since this data will be in a Google Cloud MySQL database, we'll
+  explore how to securely access the database using the Model Context 
+  Protocol (MCP) and the Google MCP Database Toolkit. 
 - [Concept] What is MCP and what does it solve?
     - Problem: 
       - Agents often need to access a database
@@ -25,6 +30,9 @@ Implementing Database Interaction with MCP
       - Allows us to define how we are providing information separate from 
         the agent, which just needs to know the tool and what parameters it 
         requires.
+      - All we need to do is define the connection, the parameters for each 
+        tool, and the query that will run for each tool. The MCP Toolbox 
+        takes care of other issues for us.
 - [Setup Walkthrough] Cloud SQL & Toolbox
     - **Cloud SQL**: Show the instance in Google Cloud Console.
         - Mention creating a MySQL instance.
@@ -51,6 +59,10 @@ Implementing Database Interaction with MCP
     - Show `db_client.load_tool("books-by-author")`.
     - Explain: The Python code is clean. It doesn't know about SQL. It just
       imports a tool definition from the running MCP server.
+- [agent-prompt.txt] Our instructions
+    - Similarly, the instructions prompt doesn't make any reference to 
+      either the MCP server or the database. It just needs to reference the 
+      tools. 
 - running the code
     - **Terminal 1**: Ensure the MCP server is running (`./toolbox ...`).
     - **Terminal 2**: Start `adk web` (`cd lesson-06-database-interaction` then
