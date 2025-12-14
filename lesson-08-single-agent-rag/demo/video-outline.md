@@ -18,7 +18,7 @@ Implementing Single-Agent RAG with ADK and Vertex AI Search
     - Very common one is to use vector databases with similarity search to 
       retrieve "chunks" of a document that are more semantically similar to 
       the question.
-    - The Vertex AI Agent Builder provides one way that combines vector 
+    - Vertex AI Search provides one way that combines vector 
       searching and traditional indexing to locate results
 - Setup
     - Create a Google Cloud Storage bucket and upload the sample PDF files from
