@@ -21,4 +21,20 @@ search_agent = Agent(
     tools=tools,
 )
 
-search_agent_tool = AgentTool(agent=search_agent)
+class StockSearchResult(BaseModel):
+    ticker: str = Field(..., description="Stock ticker symbol")
+    company_name: str = Field(..., description="Full company name")
+    current_price: float = Field(..., description="Current stock price")
+    change_percent: float = Field(..., description="Today's change %")
+    sources: List[str] = Field(..., description="Source URLs")
+
+structured_search_agent = Agent(
+    name="structured_search_agent",
+    description="An agent that can search the web for stock information.",
+    instruction=instruction,
+    model=model,
+    tools=[AgentTool(agent=search_agent)],
+    output_schema=StockSearchResult,
+)
+
+search_agent_tool = AgentTool(agent=structured_search_agent)
