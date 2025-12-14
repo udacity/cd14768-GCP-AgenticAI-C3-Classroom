@@ -136,7 +136,7 @@ to the list of all the Apps.
 4. Update your `.env` file:
    ```bash
    DATASTORE_PROJECT_ID=<your-project-id>
-   DATASTORE_LOCATION=global # or us-central1
+   DATASTORE_LOCATION=global
    DATASTORE_ENGINE_ID=<your-app-id>
    ```
 
