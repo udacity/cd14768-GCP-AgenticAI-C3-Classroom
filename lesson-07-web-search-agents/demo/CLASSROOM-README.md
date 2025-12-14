@@ -35,12 +35,15 @@ Learning objectives:
 
 LLMs are trained on vast datasets, but that data has a cut-off date. They don't
 know about events that happened today, the current weather, or real-time stock
-prices. Furthermore, they can "hallucinate" facts when unsure.
+prices. Furthermore, they can "hallucinate" facts when unsure. Because of 
+this, LLMs should never be treated as sources of truth.
 
 ### The Solution
 
 **Grounding** is the process of connecting the model's generation to verifiable
-sources of information. By integrating the **Google Search Tool**, we give the
+sources of information.
+
+By integrating the **Google Search Tool**, we give the
 model permission to query Google Search. When the user asks a question about
 current events or specific facts, the model:
 
@@ -49,6 +52,10 @@ current events or specific facts, the model:
 3. Retrieves results from Google Search.
 4. Synthesizes an answer based *only* on those results.
 5. Provides citations to the sources.
+
+It is worth noting that there are other ways to ground our queries in 
+information. Grounding with Google Search is a tool that lets us use 
+data from across the web to do so.
 
 ### How It Works
 
@@ -121,10 +128,17 @@ feature in Vertex AI.
 
 ### Step 2: The Prompt (`agent-prompt.txt`)
 
-The prompt can be very simple.
+The prompt can be very simple, but we have added a few instructions to bias 
+the LLM towards doing a search more often.
 
 ```text
-You are a helpful assistant that answers questions.
+You are a helpful assistant that answers questions accurately.
+
+When answering:
+- Use web search for current events, recent news, or facts you're uncertain about
+- Always cite your sources when using search results
+- Be transparent if information couldn't be found
+- For factual questions, prefer searched information over your training data
 ```
 
 The model doesn't need explicit instructions on *how* to search (e.g., "If you
@@ -139,7 +153,10 @@ whenever appropriate.
 
 **Misconception**: "I need to parse the HTML of search results."
 **Reality**: Grounding with Google Search handles the retrieval and parsing. The
-model receives a clean summary of relevant snippets, not raw HTML.
+model receives a clean summary of relevant snippets, not raw HTML. While the 
+results that come back from the search tool *do* provide some HTML for you 
+to use that will allow the customer to do further searches, these are not 
+required.
 
 **Misconception**: "The model searches for everything."
 **Reality**: The model is efficient. If you ask "What is 2+2?", it relies on its
