@@ -1,6 +1,8 @@
 import os
 from google.adk.agents import Agent
 from google.adk.tools import google_search, AgentTool
+from pydantic import BaseModel, Field
+from typing import List, Optional
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 instruction_file_path = os.path.join(script_dir, "search-prompt.txt")
