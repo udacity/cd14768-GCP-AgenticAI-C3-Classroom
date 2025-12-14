@@ -18,7 +18,8 @@ involving both external data retrieval and custom logic.
 
 Learning objectives:
 
-- Understand and implement the `AgentTool` class to create hierarchical agents.
+- Understand and implement the `AgentTool` class that lets an agent act as a 
+  tool for another agent.
 - Design and implement custom Python tools for specific calculations (e.g.,
   percentage change, profit/loss).
 - Craft prompts for both the main agent and the sub-agent to guide their
@@ -40,28 +41,38 @@ Learning objectives:
 While grounding with Google Search provides a powerful way to access real-time
 information, it often returns raw data. For many tasks, we need to process or
 calculate based on that data. For example, finding stock prices is one step;
-calculating percentage change or profit/loss is another. Trying to cram all this
-logic into a single agent's prompt or a single complex tool can lead to a less
-reliable or maintainable system.
+calculating percentage change or profit/loss is another.
+
+While the obvious solution might be to use the Grounding with Google Search 
+tool along with other tools, we run into a problem: Gemini does not allow the 
+Google Search tool to be used with other tools or with structured outputs 
+(which are implemented using a tool in ADK).
+
+We need some way to both use Grounding with Google Search and other tools at 
+the same time.
 
 ### The Solution
 
-We'll solve this by creating specialized agents and tools:
+We solve this by using a bit of slight-of-hand:
 
 1. **Search Agent (`search_agent.py`)**: A dedicated agent whose *only* job is
    to search Google for specific information (like stock data). It uses the
    built-in `google_search` tool.
 2. **`AgentTool`**: This ADK class allows us to wrap an entire `Agent` instance
-   and expose it as a tool to another agent. This is necessary because 
-   Gemini does not let you combine the `google_search` tool with external 
-   function tools.
-3. **Calculation Tools (`tools.py`)**: Simple Python functions (
-   `calculate_percentage_change`, `calculate_profit_or_loss`) that perform
-   deterministic mathematical operations on the data retrieved by the search
-   agent.
+   and expose it as a tool *to another agent*.
+
+The `root_agent` treats this tool like any others, so it can be combined 
+with other calculation tools to do deterministic mathematical operations on 
+the data returned by the search agent.
 
 This architecture creates a powerful financial assistant by combining the
 strengths of specialized components.
+
+Our requirements, however, give an additional twist, however. We want a 
+search tool that returns structured output, to make sure the data fed to the 
+calcuation tools is unambiguous. However, we can't mix the `google_search` 
+tool with structured output, either. We leave it as part of the exercise to 
+figure out how to present a structured search tool to the root agent.
 
 ### How It Works
 
@@ -70,13 +81,16 @@ strengths of specialized components.
 2. **Main Agent Reasoning**: The `financial_assistant_agent` understands it
    needs current stock information *and* a calculation. It will decide to use
    its `search_agent_tool`.
-3. **Sub-Agent Activation**: The `search_agent_tool` activates the
-   `search_agent`. The `search_agent`, guided by its own prompt, makes its 
+3. **Search Agent Activation**: We're not going to get into the details of 
+   sub-agents here, but we can visualize this as the `search_agent_tool` 
+   taking its input and feeding it into an agent - just as if we had sent it 
+   to our root agent. The `search_agent`, guided by its own prompt, makes its 
    own call to an LLM and uses `google_search` to find the current GOOG 
    stock price. 
 4. **Data Retrieval**: The `search_agent` returns the stock data (e.g., current
    price) which gets sent back to the LLM working with our root agent, the 
-   `financial_assistant_agent`.
+   `financial_assistant_agent`. (Although we need to find some way to return 
+   this as structured data, too.)
 5. **Main Agent Calculation**: The `financial_assistant_agent` then takes the
    retrieved current price and the user-provided purchase details and calls its
    `calculate_profit_or_loss` tool.
@@ -115,24 +129,28 @@ calculation tools, writing specific prompts, and correctly wiring up the
 3. **Create `search_agent` (`search_agent.py`)**:
     * Give it the correct tools for Grounding with Google Search
     * Complete the creation of an `Agent` that uses this tool
-    * You'll see that the `search_Agent_tool` has been defined for you.
-4. **Write Main Agent Prompt (`agent-prompt.txt`)**:
+4. **Create `structured_search_agent` (`search_agent.py`)**:
+    * Complete the creation of this `Agent`
+    * This agent should make sure that it's output is structured according to 
+      the `StockSearchResult` Pydantic class that is defined for you. 
+    * You'll see that the `search_agent_tool` has also been defined for you.
+5. **Write Main Agent Prompt (`agent-prompt.txt`)**:
     * Instruct the `financial_assistant_agent` to use its tools (search
       sub-agent and calculation tools) to answer financial questions.
-5. **Configure Main Agent (`agent.py`)**:
+6. **Configure Main Agent (`agent.py`)**:
     * Import all necessary tools including the `search_agent_tool`.
     * Register them in the `root_agent`'s `tools` list.
 
 ### Requirements
 
 1. The `financial_assistant_agent` must be able to use the `search_agent_tool`
-   to get stock data.
+   to get stock data that is returned using structured output.
 2. It must be able to perform percentage change calculations.
 3. It must be able to calculate profit or loss for stock transactions.
 4. The `search_agent` must be specifically instructed to find detailed stock
    information.
-5. The `AgentTool` class must be used to expose `search_agent` to the
-   `root_agent`.
+5. The `AgentTool` class must be used to expose `structured_search_agent` to 
+   the `root_agent` to get this structured output.
 
 ### Repository Structure
 
@@ -199,8 +217,18 @@ tools = [
 # TODO: Create an agent that uses the search tool
 search_agent =
 
+class StockSearchResult(BaseModel):
+  ticker: str = Field(..., description="Stock ticker symbol")
+  company_name: str = Field(..., description="Full company name")
+  current_price: float = Field(..., description="Current stock price")
+  change_percent: float = Field(..., description="Today's change %")
+  sources: List[str] = Field(..., description="Source URLs")
+
+# TODO: Create an agent that structures the output from the search agent
+structured_search_agent =
+
 # Create search_agent_tool by wrapping search_agent with AgentTool
-search_agent_tool = AgentTool(agent=search_agent)
+search_agent_tool = AgentTool(agent=structured_search_agent)
 ```
 
 **`tools.py`**:
@@ -238,7 +266,9 @@ If you bought 10 shares for $200 each, you would have made a profit of $1176.80.
    avoid `ZeroDivisionError`.
 2. The `search_agent`'s prompt should be very specific about the type of stock
    information it needs to extract (e.g., symbol, open, close, high, low, date).
-3. The main agent (`financial_assistant_agent`) will likely call the
+3. The method to apply the search results to a structured output was also 
+   introduced as part of this exercise.
+4. The main agent (`financial_assistant_agent`) will likely call the
    `search_agent_tool` first to get the current price, then use
    `calculate_profit_or_loss`.
 
@@ -251,8 +281,8 @@ If you bought 10 shares for $200 each, you would have made a profit of $1176.80.
 - **Clear Prompts for Sub-agents**: A sub-agent's prompt should clearly define
   its single purpose, what information it needs to find, and what format it
   should return it in. (Example: The `search_agent` prompt).
-- **Use `AgentTool` Sparingly**: We need to use it in this case to "wrap" a 
-  tool that otherwise couldn't be called, but be careful how you use it.
+- **Use `AgentTool` When Necessary**: We need to use it in this case to 
+  "wrap" a tool that otherwise couldn't be called, but be careful how you use it.
 
 ### Common Errors
 
