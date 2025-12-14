@@ -1,8 +1,9 @@
 # Module 7 Exercise Solution: Using other tools with Google Search
 
-This solution demonstrates a multi-agent system where a specialized search agent
-acts as a tool for a financial assistant agent. This allows the system to combine
-real-time web data with custom financial calculations.
+This solution demonstrates how to build a robust financial assistant that
+combines
+web search capabilities with custom calculation tools using a multi-agent
+architecture.
 
 ---
 
@@ -10,21 +11,20 @@ real-time web data with custom financial calculations.
 
 ### What You'll Learn
 
-This solution illustrates how to overcome the limitation of mixing Gemini's
-built-in tools (like Google Search) with custom Python tools. By wrapping a
-search-enabled agent in an `AgentTool`, we create a modular system where
-responsibilities are cleanly separated.
+This solution implements a multi-layered agent system where a specialized
+search agent retrieves data, a structured agent formats it, and a root agent
+performs calculations.
 
 Learning objectives:
 
-- Implementing the `AgentTool` pattern to nest agents.
-- Creating specialized sub-agents with focused prompts.
-- Integrating calculation tools to process retrieved data.
+- Implement `AgentTool` to wrap agents as tools.
+- Orchestrate a chain of agents: Search -> Structure -> Calculate.
+- Use Pydantic models to enforce structured output from a sub-agent.
 
 ### Prerequisites
 
-- A Google Cloud Project with Vertex AI enabled.
-- Understanding of the "Grounding with Google Search" feature.
+- Understanding of the Exercise requirements.
+- Familiarity with ADK `Agent`, `AgentTool`, and Pydantic.
 
 ---
 
@@ -32,23 +32,23 @@ Learning objectives:
 
 ### The Problem
 
-We want an agent that can both "search the web for the latest stock price" and
-"calculate profit/loss based on that price". However, directly mixing the
-`google_search` tool with custom function tools in a single agent can be
-problematic or unsupported depending on the model and platform constraints.
-Additionally, keeping the search logic separate from the calculation logic makes
-the system easier to maintain.
+We needed to fetch real-time stock data (which requires Google Search) but also
+perform calculations on that data. Gemini restricts mixing the `google_search`
+tool with other tools or structured outputs directly.
 
 ### The Solution
 
-1. **Sub-Agent (`search_agent.py`)**: We created a dedicated agent whose sole
-   purpose is to search. It uses the `google_search` tool.
-2. **Wrapper (`AgentTool`)**: We wrapped this search agent in an `AgentTool`.
-   This makes the entire agent look like a simple tool (function) to other
-   agents.
-3. **Main Agent (`agent.py`)**: The root agent sees `search_agent_tool` as just
-   another tool in its toolkit, alongside `calculate_profit_or_loss`. It calls
-   the search tool to get data, then calls the calculation tool to process it.
+We solved this with a 3-layer architecture:
+
+1. **`search_agent`**: A base agent with access to the `google_search` tool. It
+   performs the raw information retrieval.
+2. **`structured_search_agent`**: An agent that calls the `search_agent` (via
+   `AgentTool`) and uses an `output_schema` (`StockSearchResult`). This ensures
+   the messy search results are converted into a clean, predictable JSON format.
+3. **`financial_assistant_agent`**: The root agent. It sees the
+   `structured_search_agent` as just another tool (`search_agent_tool`). It
+   calls this tool to get data, then calls its calculation tools (`tools.py`) to
+   answer the user's question.
 
 ---
 
@@ -58,82 +58,118 @@ the system easier to maintain.
 
 ```
 .
-├── __init__.py           # Package initialization.
-├── agent-prompt.txt      # Main agent instructions.
-├── agent.py              # Main agent configuration.
-├── search_agent.py       # Sub-agent definition and AgentTool creation.
-├── search-prompt.txt     # Sub-agent instructions.
-├── tools.py              # Custom calculation tools.
-├── README.md             # Overview.
-└── requirements.txt      # Dependencies.
+├── __init__.py
+├── agent-prompt.txt      # Root agent instructions
+├── agent.py              # Root agent configuration
+├── search_agent.py       # Search & Structure agent chain
+├── search-prompt.txt     # Search agent instructions
+├── tools.py              # Calculation tools
+├── .env-sample
+└── requirements.txt
 ```
 
-### Step 1: The Search Agent (`search_agent.py`)
+### Step 1: Calculation Tools (`tools.py`)
 
-This agent is configured with the `google_search` tool.
+We implemented simple Python functions for the math logic.
 
 ```python
+def calculate_percentage_change(initial_value: float, final_value: float):
+  if initial_value == 0:
+    return {"error": "Initial value cannot be zero."}
+  percentage_change = ((final_value - initial_value) / initial_value) * 100
+  return {"percentage_change": percentage_change}
+
+
+def calculate_profit_or_loss(number_of_shares: int, purchase_price: float,
+                             current_price: float):
+  # ... logic ...
+  return {"profit_or_loss": profit_or_loss}
+```
+
+### Step 2: The Search Agent Chain (`search_agent.py`)
+
+This is the core of the solution.
+
+**1. The Base Search Agent**
+This agent has the `google_search` tool.
+
+```python
+tools = [google_search]
+
 search_agent = Agent(
-    name="search_agent",
-    description="An agent that can search the web for stock information.",
-    # ...
-    tools=[google_search],
+  name="search_agent",
+  # ...
+  tools=tools,
 )
-
-search_agent_tool = AgentTool(agent=search_agent)
 ```
 
-**Key Detail**: The `AgentTool(agent=search_agent)` line is the bridge. It
-exposes `search_agent` as a callable tool.
-
-### Step 2: Calculation Tools (`tools.py`)
-
-These are standard Python functions for deterministic math.
+**2. The Structured Output Model**
+We define what the data *should* look like.
 
 ```python
-def calculate_profit_or_loss(number_of_shares: int, purchase_price: float, current_price: float):
-    total_cost = number_of_shares * purchase_price
-    current_value = number_of_shares * current_price
-    profit_or_loss = current_value - total_cost
-    return {"profit_or_loss": profit_or_loss}
+class StockSearchResult(BaseModel):
+  ticker: str = Field(..., description="Stock ticker symbol")
+  current_price: float = Field(..., description="Current stock price")
+  # ... other fields
 ```
 
-### Step 3: The Main Agent (`agent.py`)
+**3. The Structured Agent**
+This agent uses the `search_agent` as a tool (`AgentTool(agent=search_agent)`)
+and enforces the `output_schema`.
 
-The main agent integrates everything.
+```python
+structured_search_agent = Agent(
+  name="structured_search_agent",
+  # ...
+  tools=[AgentTool(agent=search_agent)],
+  output_schema=StockSearchResult,
+)
+```
+
+**4. The Final Tool**
+We wrap the structured agent so the root agent can use it.
+
+```python
+search_agent_tool = AgentTool(agent=structured_search_agent)
+```
+
+### Step 3: The Root Agent (`agent.py`)
+
+The root agent brings everything together. It has access to the
+`search_agent_tool` (which gives it structured data) and the local calculation
+functions.
 
 ```python
 tools = [
-    search_agent_tool,
-    calculate_percentage_change,
-    calculate_profit_or_loss
+  search_agent_tool,
+  calculate_percentage_change,
+  calculate_profit_or_loss
 ]
 
 root_agent = Agent(
-    # ...
-    tools=tools
+  name="financial_assistant_agent",
+  description="An agent that can find financial information and perform calculations.",
+  # ...
+  tools=tools
 )
 ```
 
-### Step 4: Prompts
-
-- **`search-prompt.txt`**: "You are a search agent. Your only purpose is to...
-  find the latest stock information..." (Focused scope).
-- **`agent-prompt.txt`**: "You are a financial assistant. You can use Google
-  Search... and then perform calculations..." (Orchestration scope).
-
 ### Complete Example
 
-1. **User**: "I bought 10 shares of Apple at $150. How much money have I made?"
-2. **Main Agent**: "I need the current price of Apple. Calling
-   `search_agent_tool`."
-3. **Search Agent**: Calls the LLM as part of a different session to request 
-   it to search for the current price of Apple using the `google_search` tool. 
-   Returns "$220".
-4. **Main Agent**: "I have the current price ($220) and purchase price ($150).
-   Calling `calculate_profit_or_loss`."
-5. **Tool**: Returns `{"profit_or_loss": 700}`.
-6. **Main Agent**: "You have made a profit of $700."
+**User Query**: "What is the profit if I bought 10 shares of GOOG at $150
+and I sold it today??"
+
+1. **Root Agent**: Decides it needs the current price of GOOG. Calls
+   `search_agent_tool`.
+2. **Structured Agent**: Receives request. Calls its tool (the `search_agent`).
+3. **Search Agent**: Receives request. Calls `google_search`. Finds price is $
+   160. Returns text.
+4. **Structured Agent**: Takes text, formats it into `StockSearchResult` JSON (
+   `current_price: 160.0`). Returns JSON.
+5. **Root Agent**: Receives JSON. Now has `current_price=160.0`. Calls
+   `calculate_profit_or_loss(10, 150, 160)`.
+6. **Tool**: Returns `100.0`.
+7. **Root Agent**: Responds "You made a profit of $100.00."
 
 ---
 
@@ -141,16 +177,8 @@ root_agent = Agent(
 
 ### Best Practices
 
-- **Focused Sub-Agents**: Keep sub-agents simple. If `search_agent` tried to do
-  calculations too, it might get confused. By restricting it to just "find
-  data," it becomes a reliable component.
-- **Explicit Interfaces**: When using `AgentTool`, ensure the sub-agent's
-  description clearly states what it does so the main agent knows when to call
-  it.
-
-### Common Errors
-
-- **Infinite Loops**: If the main agent and sub-agent both think they are responsible
-  for the high-level task, they might pass the buck back and forth. Distinct prompts prevent this.
-- **Data Handoff**: Sometimes the sub-agent returns too much text. Instructing
-  it to be concise or structured helps the main agent parse the result.
+- **Layered Agents**: Breaking complex tasks into specialized agents (one for
+  searching, one for structuring) works around the problem that Gemini 
+  imposes with Grounding with Google Search.
+- **AgentTool**: This is a powerful way to compose agents, treating entire
+  intelligent subsystems as simple function calls for a higher-level agent.
