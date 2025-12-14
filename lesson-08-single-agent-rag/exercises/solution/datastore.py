@@ -69,9 +69,15 @@ def datastore_search_tool( search_query: str ):
     Args:
         search_query (str): What information about the store the customer is looking for
     """
-    return search(
-        project_id=os.environ.get("DATASTORE_PROJECT_ID"),
-        engine_id=os.environ.get("DATASTORE_ENGINE_ID"),
-        location=os.environ.get("DATASTORE_LOCATION", "global"),
-        search_query=search_query,
-    )
+    try:
+        results = search(
+            project_id=os.environ.get("DATASTORE_PROJECT_ID"),
+            engine_id=os.environ.get("DATASTORE_ENGINE_ID"),
+            location=os.environ.get("DATASTORE_LOCATION", "global"),
+            search_query=search_query,
+        )
+        if not results:
+            return "No results found."
+        return results
+    except Exception as e:
+        return f"A problem occurred: {e}"
