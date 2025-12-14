@@ -69,9 +69,15 @@ information to the model dynamically.
 
 ### Key Terms
 
+**Retrieval Augmented Generation (RAG)**: This is a generic term that covers 
+a method where we use a source outside the LLM to fetch possibly relevant 
+additional information. We then provide this information to the LLM to help 
+ground its response to a customer query.
+
 **Vertex AI Search (Discovery Engine)**: Google's platform for building
-search and chat applications using RAG. It handles the complex infrastructure of
-vector databases and indexing.
+search and chat applications using RAG. It indexes documents using both 
+vector embeddings of the documents and more traditional indexing methods, 
+but the exact method is hidden from the developer.
 
 **Unstructured Data**: Data that doesn't have a pre-defined data model, like PDF
 files, Word documents, or HTML pages.

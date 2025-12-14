@@ -2,8 +2,24 @@
 
 Implementing Single-Agent RAG with ADK and Vertex AI Search
 
-- Objective: Demonstrate how to build a RAG agent that retrieves information
-  from unstructured financial documents indexed in Vertex AI Agent Builder
+- In this demo, we'll be creating an agent that provides information from 
+  various financial documents - in this case, the past few quarterly and 
+  annual reports from Google.
+  - We want to ground our results on these documents - not on any other 
+    data the LLM may hallucinate or have access to.
+  - Retrieval Augmented Generation (RAG) is the general solution to doing so
+    - Use a tool to identify potential additional sources that are relevant 
+      to the prompt and retrieve them
+    - Add them to the prompt sent to the LLM
+    - The LLM uses this additional context to help ground its answer
+  - There are many possible ways to implement this.
+    - Example: Grounding with Google Search
+    - Example: Traditional database retrieval
+    - Very common one is to use vector databases with similarity search to 
+      retrieve "chunks" of a document that are more semantically similar to 
+      the question.
+    - The Vertex AI Agent Builder provides one way that combines vector 
+      searching and traditional indexing to locate results
 - Setup
     - Create a Google Cloud Storage bucket and upload the sample PDF files from
       the `docs` folder
@@ -23,6 +39,7 @@ Implementing Single-Agent RAG with ADK and Vertex AI Search
     - Point out the `instruction` in `agent-prompt.txt` that guides the agent to
       use the tool for financial questions
     - Highlight `tools=[datastore_search_tool]` as the mechanism for RAG
+- [agent-prompt.txt] Review the prompt
 - [datastore.py] Highlight the `datastore_search_tool` wrapper
     - Show how it simplifies the interface for the agent
     - Takes a single `search_query` string
