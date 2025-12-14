@@ -64,10 +64,10 @@ def search(
 
 def datastore_search_tool( search_query: str ):
     """
-    Searches store information for the requested information.
+    Searches for the requested information about superheroes and supervillains.
 
     Args:
-        search_query (str): What information about the store the customer is looking for
+        search_query (str): What information about this superhero universe the customer is looking for
     """
     try:
         results = search(
