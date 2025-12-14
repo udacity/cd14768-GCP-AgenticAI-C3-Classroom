@@ -23,8 +23,7 @@ Implementing Single-Agent RAG with ADK and Vertex AI Search
 - Setup
     - Create a Google Cloud Storage bucket and upload the sample PDF files from
       the `docs` folder
-    - Go to the "AI Application" configuration in the console (Search for "AI
-      Applications")
+    - Vertex AI Search
     - Create a new App of type "Custom Search (general)"
     - Create a Data Store, selecting Cloud Storage as the source and
       "Unstructured documents"
