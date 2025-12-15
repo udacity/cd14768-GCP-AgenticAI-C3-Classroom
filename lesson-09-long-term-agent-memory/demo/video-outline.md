@@ -34,10 +34,10 @@ Bank
 - Setup (Prerequisites for running the code)
     - Now that we understand the code, let's set up the backend it needs.
     - Navigate to `notes` directory.
-    - Run `python create_agent_engine.py` to create an Agent Engine instance.
-    - Copy the resource name output by the script.
-    - Update `.env` with `AGENT_ENGINE_ID=<resource name>`,
-      `AGENT_ENGINE_PROJECT`, and `AGENT_ENGINE_LOCATION`.
+    - Run `python create_agent_engine.py` to create an Agent Engine
+      instance.
+    - **Crucial**: Copy the resource name output by the script. We will need
+      this to start the agent.
 - [agent.py] `root_agent` Initialization
     - Start by showing the `root_agent` definition.
     - Highlight `model="gemini-2.5-flash"` and `tools` list.
@@ -50,26 +50,28 @@ Bank
     - Explain it takes `CallbackContext`.
     - Show the call to
       `callback_context._invocation_context.memory_service.add_session_to_memory(...)`.
-    - Explain how this saves the current session state to the configured Memory
-      Bank service.
+    - Explain how this saves the current session state to the configured 
+      Memory Bank service. 
 - [agent.py] Tools Configuration
     - Show the `tools` list containing `preload_memory_tool`.
     - Explain that while the callback *saves* memory, this tool *loads* relevant
       past memories into the agent's context before it generates a response.
     - Not a typical tool - we won't see it listed as a tool or the LLM
       request to call it.
-- [agent.py] Imports and Environment Configuration
+- [agent.py] Imports
     - Scroll to the top to show the imports: `preload_memory_tool`,
       `CallbackContext`.
-    - Show the environment variable loading: `AGENT_ENGINE_PROJECT`,
-      `AGENT_ENGINE_LOCATION`, `AGENT_ENGINE_ID`.
-    - Explain these connect the code to the specific Cloud resource.
+    - Note we do **not** configure the memory service in the code. That is
+      injected at runtime.
 - [agent-prompt.txt] System Prompt
-    - Show the instruction: "You should remember past conversations..."
-    - Explain that we explicitly tell the LLM to use the context that
-      `preload_memory_tool` injects.
+    - Show the instruction: "You are a friendly agent..."
+    - Discuss how we guide the agent to ask about hobbies.
+    - Explain that the memory is injected by ADK, but the prompt guides the
+      agent persona.
 - Running the code
-    - Start `adk web` in the terminal.
+    - Start `adk web` in the terminal using the memory service URI.
+    - `adk web --memory_service_uri agentengine://...` (paste your resource
+      name)
 - Demonstration
     - **First Conversation:**
         - Type "Hi, I love playing tennis on weekends."
@@ -86,6 +88,8 @@ Bank
         - Connect this visual proof back to the
           `auto_save_session_to_memory_callback` we saw in the code.
 - Conclusion
-    - Summarize: `root_agent` hooks -> Callback saves data -> Agent Engine
-      stores/summarizes -> Tool retrieves -> Prompt instructs usage.
+    - Memory services are a powerful way to remember conversational state
+      between sessions.
+    - By keeping the memory service configuration itself out of our code, we
+      reduce dependency on a specific service.
 

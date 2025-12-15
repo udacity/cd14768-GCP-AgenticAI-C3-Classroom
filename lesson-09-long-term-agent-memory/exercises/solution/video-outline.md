@@ -6,9 +6,10 @@ Bank
 - Objective: Walkthrough of the solution for the Research Assistant with
   Long-Term Memory.
 - Setup (Prerequisites)
-    - Look at `create_agent_engine.py` that was used to generate the
-      `AGENT_ENGINE_ID`.
-    - Ensure `.env` is configured correctly.
+    - Look at `create_agent_engine.py` that was used to setup the agent 
+      engine and returned the Agent Engine ID.
+    - **Crucial**: Make sure you have the resource name handy or you can get 
+      it from the Cloud Console.
 - [agent.py] `root_agent` Initialization
     - Start at the bottom with `root_agent`.
     - Highlight the key additions required for the exercise:
@@ -27,11 +28,13 @@ Bank
       `preload_memory_tool`.
     - This allows the agent to both discover new information and recall old
       information.
-- [agent.py] Imports and Environment
+- [agent.py] Imports
     - Show imports of `preload_memory_tool` and `search_agent_tool`.
-    - Show retrieval of `AGENT_ENGINE_*` environment variables.
+    - Note we do **not** configure the memory service in the code. That is 
+      injected at runtime. 
 - Running the code
-    - Start `adk web`.
+    - Start `adk web` in the terminal using the memory service URI.
+    - `adk web --memory_service_uri agentengine://...` (paste your resource name)
 - Demonstration
     - **Session 1 (Research):**
         - Ask: "What are the new features in Python 3.12?"
@@ -50,5 +53,9 @@ Bank
         - Find the user.
         - Show the summary containing the Python 3.12 facts.
 - Conclusion
-    - We successfully upgraded a transient search agent into a persistent
+    - Memory services are a powerful way to remember conversational state 
+      between sessions.
+    - By keeping the memory service configuration itself out of our code, we 
+      reduce dependency on a specific service.
+    - This let us upgrade a transient search agent into a persistent
       research assistant.
