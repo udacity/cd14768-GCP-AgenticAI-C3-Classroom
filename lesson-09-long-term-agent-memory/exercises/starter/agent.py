@@ -3,8 +3,6 @@ from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 # TODO: Import the preload memory tool and search agent tool
 
-# TODO: Get environment variables for Agent Engine
-
 async def auto_save_session_to_memory_callback(callback_context: CallbackContext):
     # TODO: Create the callback function to save session to memory
 

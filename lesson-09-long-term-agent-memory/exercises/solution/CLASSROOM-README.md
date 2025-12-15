@@ -1,15 +1,17 @@
 # Module 9: Implementing Long-Term Agent Memory with ADK and VertexAI Agent Engine Memory Bank
 
-This lesson teaches how to implement long-term agent memory using ADK and Vertex
-AI Agent Engine Memory Bank.
+This exercise asked you to build a research agent that had both access
+to factual data using the `google_search` tool, as well as conversational
+summaries from past sessions that were saved using the Agent Engine
+Memory Bank.
 
 ---
 
 ## Overview
 
-### What You'll Learn
+### What You've Learned
 
-You will learn how to combine external tools (Google Search) with long-term
+You have learned how to combine external tools (Google Search) with long-term
 memory to create a research assistant that can recall information across
 different sessions.
 
@@ -86,18 +88,12 @@ from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 from .search_agent import search_agent_tool
 from google.adk.tools.preload_memory_tool import preload_memory_tool
-
-agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")
-agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")
-agent_engine_id = os.environ.get("AGENT_ENGINE_ID")
 ```
 
 **Key points:**
 
 - `preload_memory_tool`: This tool is crucial for injecting past context into
   the agent's current session.
-- Environment variables: These link the code to the specific Agent Engine
-  instance you created.
 
 ### Step 2: Saving Sessions to Memory
 
@@ -145,7 +141,7 @@ root_agent = Agent(
 - `tools`: Includes both the capability to search (`search_agent_tool`) and the
   capability to remember (`preload_memory_tool`).
 - `after_agent_callback`: Ensures that the memory saving logic runs
-  automatically.
+  automatically after the agent has completed the work for a request.
 
 ### Complete Example
 
@@ -156,13 +152,8 @@ from google.adk.agents.callback_context import CallbackContext
 from .search_agent import search_agent_tool
 from google.adk.tools.preload_memory_tool import preload_memory_tool
 
-# 1. Environment Configuration
-agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")
-agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")
-agent_engine_id = os.environ.get("AGENT_ENGINE_ID")
 
-
-# 2. Callback for saving memory
+# 1. Callback for saving memory
 async def auto_save_session_to_memory_callback(
     callback_context: CallbackContext):
   print("save session to memory")
@@ -177,13 +168,13 @@ with open(instruction_file_path, "r") as f:
 
 model = "gemini-2.5-flash"
 
-# 3. Tool List
+# 2. Tool List
 tools = [
   search_agent_tool,
   preload_memory_tool
 ]
 
-# 4. Agent Definition
+# 3. Agent Definition
 root_agent = Agent(
   name="research_assistant_agent",
   description="An agent that can search the web and has long-term memory of past conversations.",
@@ -275,4 +266,5 @@ important to understand how they differ from using long-term memory in this way:
    complexity of searching, while the `root_agent` manages the overall
    conversation and memory.
 2. **Prompt Engineering**: Explicitly telling the agent to "remember" or
-   "recall" helps the LLM trigger the right behavior when context is injected.
+   "recall" helps the LLM understand the context that is injected later in 
+   the prompt.

@@ -1,7 +1,9 @@
 # Module 9: Implementing Long-Term Agent Memory with ADK and VertexAI Agent Engine Memory Bank
 
-This lesson teaches how to implement long-term agent memory using ADK and Vertex
-AI Agent Engine Memory Bank.
+In this exercise, you'll be creating a research assistant that searches the 
+web, but also maintains historical context of what the researcher has been 
+working on. To do this, you'll implement long-term agent memory using ADK 
+and Vertex AI Agent Engine Memory Bank.
 
 ---
 
@@ -83,14 +85,8 @@ agent's memory.
     ```
 
 3.  **Update Configuration**:
-    The script will output a **resource name**. Copy this value and update your
-    `.env` file with the following variables:
-
-    ```bash
-    AGENT_ENGINE_PROJECT=<your project ID>
-    AGENT_ENGINE_LOCATION=<your location>
-    AGENT_ENGINE_ID=<resource name from script>
-    ```
+    The script will output a **resource name**. Copy this value to use when 
+    you run `adk web`.
 
     *Note: If you lose the resource name, you can find it in the Google Cloud
     Console by searching for "Agent Engine" and viewing your instance details.*
@@ -105,15 +101,13 @@ across sessions.
 
 Your implementation must:
 
-1.  **Configure Environment**: Read the Agent Engine variables from the
-    environment.
-2.  **Implement Callback**: Write the `auto_save_session_to_memory_callback` to
+1. **Implement Callback**: Write the `auto_save_session_to_memory_callback` to
     save the current session to the memory service.
-3.  **Configure Tools**: Add both the `search_agent_tool` (provided) and the
+2. **Configure Tools**: Add both the `search_agent_tool` (provided) and the
     `preload_memory_tool` to the agent's tool list.
-4.  **Register Callback**: Ensure the `root_agent` calls your saving callback
+3. **Register Callback**: Ensure the `root_agent` calls your saving callback
     after each turn.
-5.  **Write Prompts**: Complete `agent-prompt.txt` to instruct the agent to use
+4. **Write Prompts**: Complete `agent-prompt.txt` to instruct the agent to use
     memory, and `search-prompt.txt` to guide the search helper.
 
 ### Repository Structure
@@ -146,8 +140,6 @@ from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 # TODO: Import the preload memory tool and search agent tool
 
-# TODO: Get environment variables for Agent Engine
-
 async def auto_save_session_to_memory_callback(callback_context: CallbackContext):
     # TODO: Create the callback function to save session to memory
     pass
@@ -175,7 +167,7 @@ root_agent = Agent(
 **Running the agent:**
 
 ```bash
-adk web
+adk web --memory_service_uri agentengine://<agent engine resource name>
 ```
 
 **Expected output (Session 1):**

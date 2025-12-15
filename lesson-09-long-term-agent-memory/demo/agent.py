@@ -3,10 +3,6 @@ from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools.preload_memory_tool import preload_memory_tool
 
-agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")
-agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")
-agent_engine_id = os.environ.get("AGENT_ENGINE_ID")
-
 async def auto_save_session_to_memory_callback(callback_context: CallbackContext):
     print("save session to memory")
     await callback_context._invocation_context.memory_service.add_session_to_memory(

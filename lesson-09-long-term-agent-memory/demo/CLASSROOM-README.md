@@ -9,24 +9,22 @@ AI Agent Engine Memory Bank.
 
 ### What You'll Learn
 
-Learners will understand how to save and manage conversational context over
-extended sessions using Vertex AI Agent Engine Memory Bank. They will explore
-ADK's session event hooks to integrate memory functionality.
+You will see how we can save and manage conversational context over
+extended sessions using Vertex AI Agent Engine Memory Bank.
 
 Learning objectives:
 
-- Understand methods for updating, pruning, and managing an agent’s long-term
-  memory.
+- Understand why we wish to update, prune, and manage an agent’s long-term
+  memory and how we can do so with ADK and Vertex AI Agent Engine Memory Bank.
 - Learn how to maintain context over extended sessions balancing performance and
   context length.
-- Explore techniques like time-based removal and relevance filtering for memory
-  optimization.
 
 ### Prerequisites
 
 - Basic Python programming.
 - Familiarity with Agent Development Kit (ADK) concepts.
 - Understanding of basic AI agent principles.
+- Basic familiarity with the Google Cloud Console.
 
 ---
 
@@ -39,6 +37,12 @@ each interaction. This makes it challenging to build agents that can maintain
 consistent and personalized interactions over extended periods or across
 multiple sessions, leading to repetitive questions and a fragmented user
 experience.
+
+While agents largely address this issue within a single session by providing 
+the full conversation history to an LLM, this may fall short for longer, 
+multi-session, conversations. While tools can be used to remember specific 
+properties, this does not solve the problem of remembering the "gist" of 
+conversations over time.
 
 ### The Solution
 
@@ -101,15 +105,8 @@ Replace `<your project ID>` with your actual Google Cloud Project ID.
     ```bash
     python create_agent_engine.py
     ```
-3.  The script will output a **resource name**. Copy this value.
-4.  Add the resource name to your `.env` file. You will need to set the
-    following variables based on the output and your project details:
-
-    ```bash
-    AGENT_ENGINE_PROJECT=<your project ID>
-    AGENT_ENGINE_LOCATION=<your Google Cloud location>
-    AGENT_ENGINE_ID=<resource name from script>
-    ```
+3.  The script will output a **resource name**. Copy this value, since you 
+    will need it when you start `adk web` later.
 
 If you lose the resource name, you can find it in the Google Cloud Console under
 the Agent Engine configuration page.
@@ -147,21 +144,25 @@ To verify that conversations are being saved and to explore the stored memory:
 
 ### Step 1: Configuring the Agent for Memory Bank
 
-The agent is configured to interact with the Vertex AI Agent Engine Memory Bank
-by setting up environment variables for the project, location, and agent ID. An
-`after_agent_callback` is defined to automatically save the session to the
-memory bank after each interaction.
+We need to add two elements to our agent to handle session memory:
+1. Saving information from the session is done by an `after_agent_callback` 
+   hook. This is a function that is called after all the work has been done 
+   for a request and right before the result is returned. We define the 
+   `after_agent_callback` to the `auto_save_session_to_memory` function 
+   which gets the memory service in use and adds the session to the context.
+2. Loading the conversational state and injecting it into the prompt. This 
+   is done using the predefined `preload_memory_tool`.
+
+Note that neither of these specifically reference the Agent Engine Memory 
+Bank. ADK can be configured to use other agent types. We discuss how to 
+specifically set it to use the Memory Bank when we discuss running the agent 
+below. 
 
 ```python
 import os
 from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools.preload_memory_tool import preload_memory_tool
-
-agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")  # Environment variable for GCP Project ID
-agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")  # Environment variable for GCP Location
-agent_engine_id = os.environ.get("AGENT_ENGINE_ID")  # Environment variable for Agent Engine ID
-
 
 # Callback function to save the session to memory bank
 async def auto_save_session_to_memory_callback(
@@ -195,12 +196,11 @@ root_agent = Agent(
 
 **Key points:**
 
-- Environment variables `AGENT_ENGINE_PROJECT`, `AGENT_ENGINE_LOCATION`, and
-  `AGENT_ENGINE_ID` are crucial for connecting to the Memory Bank.
 - The `auto_save_session_to_memory_callback` function is an asynchronous
   callback that adds the current session to the memory service.
 - `after_agent_callback` ensures that this saving mechanism is triggered after
   each agent interaction.
+- The exact memory module depends on other configuration - not our code.
 
 ### Step 2: Agent Instruction for Memory
 
@@ -211,14 +211,22 @@ provided by the Memory Bank.
 
 ```
 You are a friendly agent that has conversations with people about their hobbies.
-You should remember past conversations and bring them up as part of
-your present conversation.
+
+Keep the following in mind:
+* When you first talk to someone, if you don't know what their hobbies are,
+  you should ask and explain that is your primary goal.
+* If they say they don't have any hobbies, you can start talking about things
+  that interest them and steer this towards possible hobbies they may be
+  interested in.
+* Be careful about what topics they wish to talk about. You should be sure
+  that their hobbies and interests are safe.
+* Your suggestions and guidance should be encouraging. Your purpose is to
+  encourage hobbies and activities that are with others and socially
+  beneficial to the person you're talking to, their friends, and others.
 ```
 
-**Key points:**
+**Key point:**
 
-- The prompt makes the LLM aware that it is working both with the current 
-  and past conversations.
 - Additional information about the past conversations will be injected into 
   the prompt by the ADK.
 
@@ -229,12 +237,6 @@ import os
 from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools.preload_memory_tool import preload_memory_tool
-
-# Configure Agent Engine details from environment variables
-agent_engine_project = os.environ.get("AGENT_ENGINE_PROJECT")
-agent_engine_location = os.environ.get("AGENT_ENGINE_LOCATION")
-agent_engine_id = os.environ.get("AGENT_ENGINE_ID")
-
 
 # Asynchronous callback to save the current session to the memory service
 async def auto_save_session_to_memory_callback(
@@ -275,12 +277,23 @@ root_agent = Agent(
 
 **How it works:**
 
-1. The agent is initialized with a `name`, `description`, `instruction`, and the
-   `model` it will use.
-2. The `after_agent_callback` is set to `auto_save_session_to_memory_callback`,
+Since we don't specify the memory service that is used as part of the code, 
+we need to specify it when we start `adk web`. We do so giving it the 
+`--memory_service_uri` parameter with a value containing the resource name 
+returned when we ran `create_agent_engine.py`.
+
+So we would start our agent with:
+
+```bash
+adk web --memory_service_uri agentengine://projects/<project_id>/location/us
+-central1/reasoningEngines/<engine_id>
+```
+
+Once running:
+1. The `after_agent_callback` is set to `auto_save_session_to_memory_callback`,
    which ensures that after every interaction, the conversation session is saved
    to the configured Vertex AI Agent Engine Memory Bank.
-3. The `agent-prompt.txt` guides the agent to remember past conversations,
+2. The `agent-prompt.txt` guides the agent to remember past conversations,
    prompting the underlying LLM to utilize the stored memory when generating
    responses.
 
@@ -344,10 +357,7 @@ summarization, is crucial for cost and performance optimization."
 
 ### Best Practices
 
-1. **Configure Environment Variables**: Ensure `AGENT_ENGINE_PROJECT`,
-   `AGENT_ENGINE_LOCATION`, and `AGENT_ENGINE_ID` are correctly set for seamless
-   integration with Vertex AI Agent Engine Memory Bank.
-2. **Craft Effective Prompts**: Guide your agent with clear instructions in
+1. **Craft Effective Prompts**: Guide your agent with clear instructions in
    `agent-prompt.txt` to effectively utilize its long-term memory, encouraging
    it to recall and incorporate past conversations.
 
@@ -355,18 +365,17 @@ summarization, is crucial for cost and performance optimization."
 
 **Error**: "Agent does not seem to remember past conversations."
 
-- **Cause**: The `after_agent_callback` might not be correctly configured or the
-  environment variables for the Memory Bank might be missing/incorrect.
+- **Cause**: The `after_agent_callback` might not be correctly configured or 
+  the resource name for the Memory Bank might be missing/incorrect.
 - **Solution**: Double-check the `root_agent` initialization to ensure
   `after_agent_callback` points to a valid function that calls
-  `memory_service.add_session_to_memory`. Verify that all required environment
-  variables are set and accessible to the agent process.
+  `memory_service.add_session_to_memory`. Verify that you started it 
+  correctly with the right value for the `--memory_service_uri`
 
 **Error**: "Errors related to Memory Bank connection or permissions."
 
 - **Cause**: The service account running the agent may not have the necessary
-  IAM permissions to access Vertex AI Agent Engine Memory Bank, or the
-  `AGENT_ENGINE_PROJECT` or `AGENT_ENGINE_LOCATION` are incorrect.
+  IAM permissions to access Vertex AI Agent Engine Memory Bank or you gave 
+  the incorrect resource name for the Memory Bank.
 - **Solution**: Grant the required IAM roles (e.g., `Agent Engine User`) to the
-  service account. Ensure the project ID and location in the environment
-  variables are accurate.
+  service account. Ensure the project ID and location are accurate.
