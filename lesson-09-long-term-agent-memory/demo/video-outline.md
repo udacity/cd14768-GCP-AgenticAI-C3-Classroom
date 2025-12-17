@@ -32,12 +32,12 @@ Bank
       - Pre-defined hooks to save the summary after every exchange and 
         include the summary in every prompt. 
 - Setup (Prerequisites for running the code)
-    - Now that we understand the code, let's set up the backend it needs.
+    - Before we get started, we need to set up the backend it needs.
     - Navigate to `notes` directory.
     - Run `python create_agent_engine.py` to create an Agent Engine
       instance.
     - **Crucial**: Copy the resource name output by the script. We will need
-      this to start the agent.
+      this to start the agent. Also available later in the console.
 - [agent.py] `root_agent` Initialization
     - Start by showing the `root_agent` definition.
     - Highlight `model="gemini-2.5-flash"` and `tools` list.
@@ -88,8 +88,8 @@ Bank
         - Connect this visual proof back to the
           `auto_save_session_to_memory_callback` we saw in the code.
 - Conclusion
-    - Memory services are a powerful way to remember conversational state
-      between sessions.
     - By keeping the memory service configuration itself out of our code, we
       reduce dependency on a specific service.
+    - Memory services are a powerful way to remember conversational summaries
+      between sessions.
 
