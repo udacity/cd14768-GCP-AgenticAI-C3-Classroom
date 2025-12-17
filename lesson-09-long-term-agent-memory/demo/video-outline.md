@@ -3,8 +3,14 @@
 Implementing Long-Term Agent Memory with ADK and VertexAI Agent Engine Memory
 Bank
 
-- Objective: Learn to implement long-term agent memory using ADK and Vertex AI
-  Agent Engine Memory Bank.
+- Our goal is to create an agent that will help us brainstorm ideas for our 
+  hobbies.
+  - A key feature is that it will remember the essential parts of our 
+    conversation in between sessions, so we can have discussions that last 
+    between many conversations over time.
+  - Remembering the context of what we are talking about between sessions is 
+    helpful in creating agents that are useful over the long-term.
+  - Vertex AI Agent Engine Memory Bank helps us do this.
 - What is the Memory Service?
     - A service that provides persistent storage for agent interactions.
     - It uses AI to summarize and index conversations.
@@ -15,6 +21,8 @@ Bank
     - **Why it's useful**: Allows agents to maintain context across different
       sessions and long periods of time, creating a more personalized and
       intelligent experience without managing complex database schemas manually.
+    - At the same time, it doesn't store the entire conversation, but rather 
+      summaries. Useful for extremely long conversations with lots of data.
 - Comparison with Session/User State
     - **Session State**: 
       - Ephemeral key/value data for current conversation (e.g., itinerary).
