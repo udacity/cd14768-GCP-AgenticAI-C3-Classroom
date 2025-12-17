@@ -1,4 +1,5 @@
 google-adk>=1.17.0
+google-adk[otel-gcp]>=1.17.0
 opentelemetry-instrumentation-google-genai>=0.4b0
 opentelemetry-exporter-gcp-logging>=1.11.0a0
 opentelemetry-exporter-gcp-monitoring>=1.11.0a0
