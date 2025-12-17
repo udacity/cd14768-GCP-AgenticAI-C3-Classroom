@@ -3,8 +3,10 @@
 Implementing Long-Term Agent Memory with ADK and VertexAI Agent Engine Memory
 Bank
 
-- Objective: Walkthrough of the solution for the Research Assistant with
-  Long-Term Memory.
+- Your task was to create a research assistant agent that would retain 
+  information about the conversations and research results in between 
+  sessions. This sort of business tool is great to help with long term data 
+  collection and planning.
 - Setup (Prerequisites)
     - Look at `create_agent_engine.py` that was used to setup the agent 
       engine and returned the Agent Engine ID.
@@ -37,13 +39,14 @@ Bank
     - `adk web --memory_service_uri agentengine://...` (paste your resource name)
 - Demonstration
     - **Session 1 (Research):**
-        - Ask: "What are the new features in Python 3.12?"
+        - Ask: "What are the latest features about Google Gemini?"
         - Agent uses `search_agent_tool` to find answers.
         - **Highlight**: The terminal log "save session to memory" after the
           turn.
+        - Comment about something being significant.
         - End session/refresh.
     - **Session 2 (Recall):**
-        - Ask: "What did we learn about Python 3.12?"
+        - Ask: "Was there anything I found important about Google Gemini?"
         - Agent answers *without* searching again.
         - Explain: It used the summarized memory injected by
           `preload_memory_tool`.
@@ -53,9 +56,9 @@ Bank
         - Find the user.
         - Show the summary containing the Python 3.12 facts.
 - Conclusion
-    - Memory services are a powerful way to remember conversational state 
-      between sessions.
     - By keeping the memory service configuration itself out of our code, we 
       reduce dependency on a specific service.
+  - Memory services are a powerful way to remember conversational state
+    between sessions.
     - This let us upgrade a transient search agent into a persistent
       research assistant.
