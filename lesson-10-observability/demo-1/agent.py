@@ -1,23 +1,4 @@
 import os
-import logging
-
-class GlobalAdapter(logging.LoggerAdapter):
-    def process(self, msg, kwargs):
-        extra = kwargs.get("extra", {})
-        extra["adk_instance"] = "whee-test-3"
-        kwargs["extra"] = extra
-        return msg, kwargs
-
-
-_original_get_logger = logging.getLogger
-
-def patched_get_logger(name=None):
-    logger = _original_get_logger(name)
-    return GlobalAdapter(logger, {})
-
-# Monkey-patch logging.getLogger
-logging.getLogger = patched_get_logger
-
 from google.adk.agents import Agent
 
 def get_temperature(city: str) -> str:
