@@ -34,7 +34,7 @@ This Google ADK project provides a bird-shop customer service agent using:
 - `GOOGLE_GENAI_USE_VERTEXAI`
 - `GOOGLE_CLOUD_PROJECT`
 - `GOOGLE_CLOUD_LOCATION`
-- `GOOGLE_GENAI_MODEL`
+- `GOOGLE_GENAI_MODEL` (verify availability; default: `gemini-3.8-flash`)
 - `TOOLBOX_URL`
 - `MYSQL_HOST`
 - `MYSQL_PORT`

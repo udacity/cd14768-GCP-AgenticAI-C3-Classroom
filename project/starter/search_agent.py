@@ -16,7 +16,7 @@ search_agent = Agent(
   name="bettys_store_search_agent",
   description="A grounded web search agent for current, externally sourced information.",
   instruction=instruction,
-  model=os.environ.get("GOOGLE_GENAI_MODEL", "gemini-2.5-flash"),
+  model=os.environ.get("GOOGLE_GENAI_MODEL", "gemini-3.8-flash"),
   tools=[google_search],
 )
 

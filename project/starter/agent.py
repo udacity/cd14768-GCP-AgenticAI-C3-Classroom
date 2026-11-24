@@ -33,6 +33,6 @@ root_agent = Agent(
     name="bettys_store_agent",
     description="Betty's bird shop customer service agent for products, documents, and web research.",
     instruction=instruction,
-    model=os.environ.get("GOOGLE_GENAI_MODEL", "gemini-2.5-flash"),
+    model=os.environ.get("GOOGLE_GENAI_MODEL", "gemini-3.8-flash"),
     tools=tools,
 )
