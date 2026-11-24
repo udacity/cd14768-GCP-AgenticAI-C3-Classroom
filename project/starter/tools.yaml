@@ -1,4 +1,45 @@
 sources:
-  # TODO: Add sources
+  betty_bird_shop:
+    kind: mysql
+    host: ${MYSQL_HOST}
+    port: ${MYSQL_PORT:3306}
+    database: betty
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+
 tools:
-  # TODO: Add tool definitions
+  get_product_price:
+    kind: mysql-sql
+    source: betty_bird_shop
+    description: Searches the bird shop products table for a product name or partial name and returns matching prices.
+    parameters:
+      - name: product_name
+        type: string
+        description: The product name or partial name to search for.
+    statement: SELECT id, product_name, price FROM products WHERE product_name LIKE CONCAT('%', ?, '%') LIMIT 10;
+
+  add_product:
+    kind: mysql-sql
+    source: betty_bird_shop
+    description: Adds a new product to Betty's bird shop inventory.
+    parameters:
+      - name: product_name
+        type: string
+        description: The name of the product.
+      - name: price
+        type: float
+        description: The product price.
+    statement: INSERT INTO products (product_name, price) VALUES (?, ?);
+
+  update_product_stock:
+    kind: mysql-sql
+    source: betty_bird_shop
+    description: Updates the price for a product in Betty's bird shop.
+    parameters:
+      - name: price
+        type: float
+        description: The new product price.
+      - name: product_id
+        type: integer
+        description: The product ID.
+    statement: UPDATE products SET price = ? WHERE id = ?;

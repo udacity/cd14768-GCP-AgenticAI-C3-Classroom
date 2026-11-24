@@ -1,3 +1,5 @@
+import os
+
 from google.api_core.client_options import ClientOptions
 from google.cloud import discoveryengine_v1 as discoveryengine
 
@@ -35,12 +37,51 @@ def search(
 
   # discoveryengine.SearchRequest
   request = {
-    # TODO: Define the request. This may require other objects being defined above
+    "serving_config": serving_config,
+    "query": search_query,
+    "page_size": 10,
+    "content_search_spec": {
+      "search_result_mode":
+        discoveryengine.SearchRequest.ContentSearchSpec.SearchResultMode.CHUNKS
+    },
+    "query_expansion_spec": {
+      "condition":
+        discoveryengine.SearchRequest.QueryExpansionSpec.Condition.AUTO,
+    },
+    "spell_correction_spec": {
+      "mode":
+        discoveryengine.SearchRequest.SpellCorrectionSpec.Mode.AUTO,
+    },
   }
 
   page_result = client.search(request)
 
-  # TODO: Format and return the results
+  results = []
+  for result in page_result:
+    if result.chunk and result.chunk.content:
+      results.append(result.chunk.content)
+  return results
 
 
-# TODO: Implement a tool that calls search()
+def datastore_search_tool(search_query: str) -> str | list[str]:
+  """
+  Searches Betty's store documents for history, staff, and working hours.
+
+  Args:
+    search_query: The store topic or question to search for.
+  """
+  try:
+    project_id = os.environ.get("DATASTORE_PROJECT_ID")
+    engine_id = os.environ.get("DATASTORE_ENGINE_ID")
+    if not project_id or not engine_id:
+      return "Datastore configuration is missing. Set DATASTORE_PROJECT_ID and DATASTORE_ENGINE_ID."
+
+    results = search(
+      project_id=project_id,
+      engine_id=engine_id,
+      location=os.environ.get("DATASTORE_LOCATION", "global"),
+      search_query=search_query,
+    )
+    return results if results else "No results found."
+  except Exception as e:
+    return f"A problem occurred: {e}"

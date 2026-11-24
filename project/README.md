@@ -1,53 +1,63 @@
-# README Template
+# Betty's Bird Shop Agent
 
-Below is a template provided for use when building your README file for students.
+This Google ADK project provides a bird-shop customer service agent using:
 
-# Project Title
+- MCP Toolbox and MySQL product data
+- Vertex AI Search for indexed store documents
+- A grounded Google Search sub-agent
+- Short-term in-memory sessions
 
-Project description goes here.
+## Setup
 
-## Getting Started
+1. Load `project/starter/docs/betty_db.sql` into a MySQL database named `betty`.
+2. Install dependencies:
 
-Instructions for how to get a copy of the project running on your local machine.
+   ```bash
+   python -m pip install -r project/starter/requirements.txt
+   ```
 
-### Dependencies
+3. Copy `project/starter/.env-sample` to `.env` and replace placeholders.
+4. Start MCP Toolbox:
 
-```
-Examples here
-```
+   ```bash
+   ./toolbox --tools-file project/starter/tools.yaml --port 5000
+   ```
 
-### Installation
+5. Start ADK:
 
-Step by step explanation of how to get a dev environment running.
+   ```bash
+   python -m google.adk.cli web project --host 127.0.0.1 --port 8005
+   ```
 
-List out the steps
+## Environment Variables
 
-```
-Give an example here
-```
+- `GOOGLE_GENAI_USE_VERTEXAI`
+- `GOOGLE_CLOUD_PROJECT`
+- `GOOGLE_CLOUD_LOCATION`
+- `GOOGLE_GENAI_MODEL`
+- `TOOLBOX_URL`
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
+- `DATASTORE_PROJECT_ID`
+- `DATASTORE_LOCATION`
+- `DATASTORE_ENGINE_ID`
+
+Never commit `.env` or credentials.
 
 ## Testing
 
-Explain the steps needed to run any automated tests
-
-### Break Down Tests
-
-Explain what each test does and why
-
+```bash
+python -m compileall -q project/starter
+python -c "import project.starter"
 ```
-Examples here
-```
-## Project Instructions
 
-This section should contain all the student deliverables for this project.
+Test these conversations in ADK:
 
-## Built With
+1. Ask for the price of `Bird Seed Mix`.
+2. Ask "What are the store's working hours?"
+3. Ask "Who is Betty?"
+4. Ask one current-information question that triggers grounded Google Search.
 
-* [Item1](www.item1.com) - Description of item
-* [Item2](www.item2.com) - Description of item
-* [Item3](www.item3.com) - Description of item
-
-Include all items used to build project.
-
-## License
-[License](../LICENSE.md)
+Save the actual ADK conversations as PNG/JPEG files in `screenshots/`.
