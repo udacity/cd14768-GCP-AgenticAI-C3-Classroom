@@ -53,11 +53,17 @@ python -m compileall -q project/starter
 python -c "import project.starter"
 ```
 
-Test these conversations in ADK:
+In one ADK session, test the following requests:
 
-1. Ask for the price of `Bird Seed Mix`.
-2. Ask "What are the store's working hours?"
-3. Ask "Who is Betty?"
-4. Ask one current-information question that triggers grounded Google Search.
+1. Ask for the price of `Bird Seed Mix` and verify `get_product_price` returns
+   the database result.
+2. Ask for an unknown product and verify the agent reports no matching result.
+3. Ask "What are the store's working hours?" and "Who is Betty?" and verify
+   each invokes `datastore_search_tool`.
+4. Ask a current bird-care question and verify `search_agent_tool` uses
+   grounded Google Search and shows its sources.
 
-Save the actual ADK conversations as PNG/JPEG files in `screenshots/`.
+Expand the relevant request/response tool events and keep the session ID
+visible when capturing evidence. Save genuine ADK screenshots as PNG/JPEG
+files in `screenshots/`. Include evidence for both found and not-found product
+lookups, both datastore questions, and grounded web search.
