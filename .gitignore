@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env-sample
+__pycache__/
+*.py[cod]
+.venv/
+project/.adk/
+
+/toolbox
+.env
+.env.*
+.venv/
+__pycache__/
+*.pyc
+/toolbox
