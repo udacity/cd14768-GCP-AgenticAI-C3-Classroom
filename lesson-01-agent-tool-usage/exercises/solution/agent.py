@@ -20,7 +20,7 @@ def division(a: int, b: int) -> float:
     return a / b
 
 # Experiment with the different models to see what works better
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
 
 # Read the instructions from a file in the same
 # directory as this agent.py file.

@@ -5,7 +5,7 @@
 
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=<your project ID>
-GOOGLE_CLOUD_LOCATION=us-central1
+GOOGLE_CLOUD_LOCATION=global
 
 DATASTORE_PROJECT_ID=<your project ID>
 DATASTORE_LOCATION=global
@@ -14,8 +14,9 @@ DATASTORE_ENGINE_ID=<app id>
 
 Make sure you replace <your project ID> with the ID for your project.
 
-Using a LOCATION of us-central1 is usually the best bet in the United States,
-but consider other cloud data center locations for elsewhere.
+Use a LOCATION of global: the Gemini models these exercises use are served
+there. In the course's lab projects, a regional location such as
+us-central1 answers 404 NOT_FOUND.
 
 The Datastore location should be set to "global".
 The Datastore Engine ID should be set to the AI Applications App ID.

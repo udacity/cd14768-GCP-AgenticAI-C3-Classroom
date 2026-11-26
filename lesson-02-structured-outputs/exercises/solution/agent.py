@@ -17,7 +17,7 @@ class FeedbackSummary(BaseModel):
     feedback_type: FeedbackType = Field(..., description="The type of feedback.")
     summary: str = Field(..., description="A summary of the feedback.")
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
 
 root_agent = Agent(
     name="information_summarizer",

@@ -7,7 +7,7 @@ instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
 with open(instruction_file_path, "r") as f:
     instruction = f.read()
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
 
 # Set up the tools that we will be using for the root agent
 toolbox_url = os.environ.get("TOOLBOX_URL", "http://127.0.0.1:5000")
