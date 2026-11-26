@@ -9,7 +9,10 @@ instruction_file_path = os.path.join(script_dir, "search-prompt.txt")
 with open(instruction_file_path, "r") as f:
     instruction = f.read()
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
+# Agents that use tools and an output_schema together run on Flash-Lite: with both, the
+# Gemini 3 Flash models tend to call the tool again instead of answering.
+schema_model = "gemini-3.5-flash-lite"
 
 tools = [
     google_search
@@ -34,7 +37,7 @@ structured_search_agent = Agent(
     name="structured_search_agent",
     description="An agent that can search the web for stock information.",
     instruction=instruction,
-    model=model,
+    model=schema_model,
     tools=[AgentTool(agent=search_agent)],
     output_schema=StockSearchResult,
 )

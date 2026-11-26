@@ -11,7 +11,7 @@ with open(instruction_file_path, "r") as f:
 
 # TODO: Define Pydantic types and classes
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
 
 # TODO: Configure the root_agent with the correct output_schema
 root_agent = Agent(

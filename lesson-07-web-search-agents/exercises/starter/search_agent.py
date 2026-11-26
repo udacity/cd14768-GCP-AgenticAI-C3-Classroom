@@ -9,7 +9,10 @@ instruction_file_path = os.path.join(script_dir, "search-prompt.txt")
 with open(instruction_file_path, "r") as f:
     instruction = f.read()
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
+# Agents that use tools and an output_schema together run on Flash-Lite: with both, the
+# Gemini 3 Flash models tend to call the tool again instead of answering.
+schema_model = "gemini-3.5-flash-lite"
 
 # TODO: Define the search tool
 tools = [
@@ -26,6 +29,7 @@ class StockSearchResult(BaseModel):
     sources: List[str] = Field(..., description="Source URLs")
 
 # TODO: Create an agent that structures the output from the search agent
+# (it has tools and an output_schema, so give it model=schema_model)
 structured_search_agent =
 
 # Create search_agent_tool by wrapping search_agent with AgentTool

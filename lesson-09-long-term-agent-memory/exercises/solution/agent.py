@@ -14,7 +14,7 @@ instruction_file_path = os.path.join(script_dir, "agent-prompt.txt")
 with open(instruction_file_path, "r") as f:
     instruction = f.read()
 
-model = "gemini-2.5-flash"
+model = "gemini-3.8-flash"
 
 tools = [
     search_agent_tool,

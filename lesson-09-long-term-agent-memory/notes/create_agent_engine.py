@@ -1,7 +1,8 @@
 import os
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
-load_dotenv()
+# Read the .env file in the folder this script is run from (see the README).
+load_dotenv(find_dotenv(usecwd=True))
 
 import vertexai
 

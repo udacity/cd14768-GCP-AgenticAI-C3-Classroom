@@ -5,7 +5,7 @@
 
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=<your project ID>
-GOOGLE_CLOUD_LOCATION=us-central1
+GOOGLE_CLOUD_LOCATION=global
 
 TOOLBOX_URL=http://127.0.0.1:5001
 
@@ -16,8 +16,9 @@ MYSQL_PASSWORD=<mysql password>
 
 Make sure you replace <your project ID> with the ID for your project.
 
-Using a LOCATION of us-central1 is usually the best bet in the United States,
-but consider other cloud data center locations for elsewhere.
+Use a LOCATION of global: the Gemini models these exercises use are served
+there. In the course's lab projects, a regional location such as
+us-central1 answers 404 NOT_FOUND.
 
 See below for the values that are needed for the TOOLBOX_URL and the
 various MYSQL environment variables
@@ -62,7 +63,7 @@ You then need to permit your user to the database with a MySQL command such as
 
 ### Setup and run MCP Toolbox
 
-See [here](https://googleapis.github.io/genai-toolbox/getting-started/introduction/)
+See [here](https://mcp-toolbox.dev/documentation/introduction/#install-toolbox)
 for how to download the toolbox server for your platform.
 
 To run the MCP server:
@@ -71,7 +72,11 @@ To run the MCP server:
    command line
    - If this is using bash, for example, you might do this as something like
      `export $(grep -v '^#' .env | xargs)`
-3. Run `/path/to/toolbox --tools-file tools.yaml`
+3. Run `/path/to/toolbox --tools-file tools.yaml --enable-api`
+   - `--enable-api` turns on the HTTP API that the `toolbox-core` Python client
+     uses. Toolbox 0.31.0 and later turn it off by default, and without it the
+     agent's tools fail to load with `410 Gone`. An older Toolbox rejects the
+     flag: download the current release.
    - If you need to use another port, you can include a --port parameter
 
 Update the TOOLBOX_URL in the .env file to specify the hostname (usually 

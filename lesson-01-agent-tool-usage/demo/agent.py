@@ -14,9 +14,9 @@ def get_wind_speed(city: str) -> str:
     return f"The wind speed in {city} is 15 km/h."
 
 # Experiment with the different models to see what works better
-model = "gemini-2.5-flash-lite"
-# model = "gemini-2.5-flash"
-# model = "gemini-2.5-pro"
+model = "gemini-3.5-flash-lite"
+# model = "gemini-3.8-flash"
+# model = "gemini-3.5-flash"
 
 # Read the instructions from a file in the same
 # directory as this agent.py file.
